@@ -22,6 +22,115 @@
 
 #### 추상 클래스
 
+* 상속받는 자식 클래스가 반드시 추상 메소드를 구현하도록 하기 위함.
+  * 그래서 왜 추상 클래스를 사용할까? why?? 
+  * 공통적인 부분은 만들어진 기능을 사용하고, 이를 받아 사용하는 쪽에서는 자신에게 필요한 부분만 재정의하여 사용함으로써 유지보수와 통일성을 유지하기위함.
+  * **공통된 필드와 메서드를 통일할 목적**
+  * ex) 10명의 개발자가 자동차를 상속받아 각자만의 실체클래스를 구현하는경우
+  * 수만줄의 A자동차가 계약만료되고, B자동차를 새로 교체할 때 객체 인스턴스만 변경하면됨.
+
+> 추상클래스 예시
+
+![Alt text](image.png)
+
+```java
+package oop4;
+
+public abstract class Computer {
+
+	public abstract void display();
+	public abstract void typing();
+	
+	public void turnOn() {
+		System.out.println("전원을 켭니다.");
+	}
+	
+	public void turnOff() {
+		System.out.println("전원을 끕니다.");
+	}
+}
+```
+
+```java
+package oop4;
+
+public class Desktop extends Computer{
+
+	@Override
+	public void display() {
+		System.out.println("PC 화면");
+	}
+
+	@Override
+	public void typing() {
+		System.out.println("PC 타이핑");
+	}
+
+	@Override
+	public void turnOff() {
+		System.out.println("PC 전원끄기");
+	}
+}
+
+```
+
+```java
+package oop4;
+
+public abstract class NoteBook extends Computer{
+
+	@Override
+	public void display() {
+		System.out.println("노트북 화면");
+	}
+}
+```
+
+```java
+package oop4;
+
+public class MyNoteBook extends NoteBook{
+
+	@Override
+	public void typing() {
+		System.out.println("MyNoteBook typing");
+	}
+}
+```
+
+```java
+package oop4;
+
+public class ComputerTest {
+
+	public static void main(String[] args) {
+		
+		Computer computer = new Desktop(); 
+		NoteBook book = new MyNoteBook();
+		//Computer computer = new Computer(); 추상메서드이므로 new를 통한 객체 생성 불가.
+		
+		computer.display();
+		book.display();
+	}
+}
+```
+* 추상클래스에서 상위클래스인 Computer class 생성.
+* Desktop은 Computer를 상속받으며, display(), typing() 메소드를 오버라이딩 하고있으며 turnOff() 도 재정의해서 사용함.
+* Notebook도 Computer를 상속받으며 추상클래스로서 Notebook 클래스를 생성함.
+* MyNoteBook은 NoteBook을 상속받음.
+* Main 메소드인 ComputerTest에서는 다형성을 사용하여 객체의 메소드 호출이 가능함.
+* 단, 추상메소드는 new를 통한 객체 생성이 불가함.
+* 
+</div>
+</details>
+
+<details>
+<summary style="font-size:20px">인터페이스</summary>
+<div markdown="1">
+
+#### 인터페이스
+
+* 
 
 </div>
 </details>
