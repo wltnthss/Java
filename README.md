@@ -120,7 +120,7 @@ public class ComputerTest {
 * MyNoteBook은 NoteBook을 상속받음.
 * Main 메소드인 ComputerTest에서는 다형성을 사용하여 객체의 메소드 호출이 가능함.
 * 단, 추상메소드는 new를 통한 객체 생성이 불가함.
-* 
+  
 </div>
 </details>
 
@@ -128,9 +128,266 @@ public class ComputerTest {
 <summary style="font-size:20px">인터페이스</summary>
 <div markdown="1">
 
+#### 개요
+
+* 추상 클래스는 부모인 최상단 클래스에서 공통적인 기능을 구현함으로써 자식 클래스에서 오버라이딩하여 확장성 및 유지보수에 용이하도록 도와줌.
+* 인터페이스는?? 다중 상속 기능 제공과 추상 클래스와 비슷한 역할을 한다는 것으로 알고있음.
+* 추상클래스와 어떤 다른 점이 있고 어떤 상황에 쓰이는가?
+  
 #### 인터페이스
 
-* 
+* 추상 클래스는 IS-A, 인터페이스는 HAS-A.
+* 추상 클래스는 한 개의 클래스만 상속이 가능하고 자식 클래스에서 선택적으로 오버라이딩하여 사용할 수 있도록 하기위함.
+* 인터페이스는 다중 상속이 가능하고 공통으로 필요한 기능들도 모든 클래스에서 오버라이딩하여 재정의 해야함.
 
+
+> 인터페이스와 추상 클래스 예시
+
+![Alt text](image-1.png)
+
+```java
+public abstract class Creature {
+    private int x;
+    private int y;
+    private int age;
+    
+    public Creature(int x, int y, int age) {
+        this.age = age;
+        this.x = x;
+        this.y = y;
+    }
+    
+    public void age() {
+        age++;
+    }
+    
+    public void move(int xDistance) {
+        x += xDistance;
+    }
+    
+    public int getX() {
+        return x;
+    }
+    public void setX(int x) {
+        this.x = x;
+    }
+    public int getY() {
+        return y;
+    }
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+    public abstract void attack();
+    public abstract void printInfo();
+    
+    @Override
+    public String toString() {
+        return "x : " + x + ", y : " + y + ", age : " + age;
+    }
+}
+```
+* 인간과 동물은 생명체를 상속.
+* 각 생명체들은 구분에 따라서 인간과 동물을 상속, 할 수 있는 기능들을 인터페이스로 구현.
+* 공통적으로 이동할 수 있는 기능인 move를 하위클래스에서 상속할 수 있도록 일반 메소드로 구현.
+* attack, printInfo 는 각각 생명체에 따라 다른 기능으로 구현하기 때문에 추상메소드로 구현.
+
+```java
+public abstract class Animal extends Creature{
+    
+    public Animal(int x, int y, int age) {
+        super(x, y, age);
+    }
+    
+    @Override
+    public void attack() {
+        System.out.println("몸을 사용하여 공격!!");
+    }
+}
+```
+
+* 동물 클래스는 생명체이므로 Creature 추상클래스를 상속받음.
+* 몸을 사용하여 공격하는 attack 메소드를 오버라이딩.
+* **Q.조상클래스인 Creature 에서 지정한 printInfo 메소드는 왜 사용하지 않았을까?**
+  * 동물클래스도 abstract 추상 클래스를 사용함으로써 앞으로의 생길 자식클래스에게 위임해서 사용하기 위함.
+
+```java
+public abstract class Human extends Creature implements Talkable{
+    public Human(int x, int y, int age) {
+        super(x, y, age);
+    }
+    
+    @Override
+    public void attack() {
+        System.out.println("도구를 사용!!");
+    }
+    
+    @Override
+    public void talk() {
+        System.out.println("사람은 말을 할 수 있다.");
+    }
+}
+```
+
+* Human 클래스도 Animal 클래스와 마찬가지로 추상 클래스로 구함.
+* 하지만 여기서 Animal 클래스와 다르게 Talkable 인터페이스를 구현한 차이점이 있음.
+
+```java
+public interface Talkable {
+    abstract void talk();
+}
+```
+
+* 인터페이스는 이정표와 같은 것으로 정리해두자.
+* Talable를 인터페이스를 구현할 경우 talk() 메소드를 오버라이딩하여 사용할 수 있음.
+
+```java
+public interface Flyable {
+    void fly(int yDistance);
+    void flyMove(int xDistance, int yDistance);
+}
+```
+
+* 새 종류가 구현할 인터페이스 구현. 다른 동물들과는 다르게 y행으로 이동할 수 있는 메소드 선언함.
+
+```java
+public class Pigeon extends Animal implements Flyable{
+    public Pigeon(int x, int y, int age) {
+        super(x, y, age);
+    }
+    
+    @Override
+    public void fly(int yDistance) {
+        setY(getY() + yDistance);
+    }
+    
+    @Override
+    public void flyMove(int xDistance, int yDistance) {
+        setY(getY() + yDistance);
+        setX(getX() + xDistance);
+    }
+    
+    @Override
+    public void printInfo() {
+        System.out.println("Pigeon -> " + toString());
+    }
+}
+```
+
+* 비둘기는 동물 클래스를 상속받고 날 수 있는 동물이므로 Flyable 인터페이스를 구현함.
+* 여기서 printInfo 는 조상 클래스인 Creature 클래스에서의 추상메소드를 오버라이딩하였음.
+
+```java
+public interface Swimable {
+    void swimDown(int yDistance);
+}
+```
+
+* **중요한 공통된 기능을 사용하는 인터페이스**
+  * 거북이와, 케빈이라는 클래스를 작성할 때 두 생명체는 모두 수영을 할 수 있다고 정의함.
+  * 하지만 동물이나 사람중에서도 수영을 못하는 경우도 있기에 swimDown 추성메소드가 아닌 Siwmable 인터페이스를 구현.
+  * 각각 따로 정의하여 구현시킴으로써 가독성도 좋고 유지보수측면에서 좋음.
+
+```java
+public class Turtle extends Animal implements Swimable{
+    public Turtle(int x, int y, int age) {
+        super(x, y, age);
+    }
+    
+    @Override
+    public void swimDown(int yDistance) {
+        setY(getY() - yDistance);
+    }
+    
+    @Override
+    public void printInfo() {
+        System.out.println("Turtle -> " + toString());
+    }
+}
+
+```
+
+* 거북이 클래스에서는 Swimable 을 구현하고 swimDown 재정의하여 사용.
+
+```java
+public class Kevin extends Human implements Programmer, Swimable{
+    public Kevin(int x, int y, int age) {
+        super(x, y, age);
+    }
+    
+    @Override
+    public void coding() {
+        System.out.println("Hello World!");
+    }
+    
+    @Override
+    public void swimDown(int yDistance) {
+        setY(getY() - yDistance);
+        if(getY() < -10) {
+            System.out.println("너무 깊이 들어가면 죽을수도 있어!!");
+        }
+    }
+    
+    @Override
+    public void printInfo() {
+        System.out.println("Kevin -> " + toString());
+    }
+}
+
+```
+
+* Kevin은 다중구현을 통해서 수영도 할 수 있고, 코딩도 할 수 있는 사람
+
+```java
+public interface Programmer {
+    void coding();
+}
+```
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Pigeon p = new Pigeon(5,10,14);
+        p.printInfo();
+        p.age();
+        p.move(100);
+        p.printInfo();
+        p.fly(5);
+        p.printInfo();
+        p.flyMove(10, 20);
+        p.printInfo();
+        p.attack();
+        System.out.println();
+        
+        Kevin kev = new Kevin(0, 0, 35);
+        kev.printInfo();
+        kev.age();
+        kev.move(10);
+        kev.printInfo();
+        kev.attack();
+        kev.coding();
+        kev.swimDown(20);
+        kev.printInfo();
+        kev.talk();
+        System.out.println();
+        
+        Turtle tur = new Turtle(100, -10, 95);
+        tur.printInfo();
+        tur.age();
+        tur.move(-100);
+        tur.printInfo();
+        tur.attack();
+        tur.swimDown(1000);
+        tur.printInfo();
+    }
+}
+```
+
+* 메인메소드 구현.
+ 
+#### 요약
+> **추상 클래스 : 상속 관계를 타고 올라갔을 때 같은 조상클래스를 상속하는 똑같은 기능이 필요할 때!**
+> **인터페이스: 상속 관계를 타고 올라갔을 때 다른 조상클래스를 상속하는 기능이 필요할 때!**
+ 
 </div>
 </details>
