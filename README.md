@@ -386,8 +386,27 @@ public class Main {
 * 메인메소드 구현.
  
 #### 요약
-> **추상 클래스 : 상속 관계를 타고 올라갔을 때 같은 조상클래스를 상속하는 똑같은 기능이 필요할 때!**		
+> **추상 클래스 : 상속 관계를 타고 올라갔을 때 같은 조상클래스를 상속하는 똑같은 기능이 필요할 때!**
+		
 > **인터페이스: 상속 관계를 타고 올라갔을 때 다른 조상클래스를 상속하는 기능이 필요할 때!**
- 
+
+</div>
+</details>
+
+<details>
+<summary style="font-size:20px">Object 클래스</summary>
+<div markdown="1">
+
+#### 개요
+
+* import 하지 않아도 자동으로 import되는 Object 클래스란 무엇인가 알아보기위함
+
+#### Object 클래스
+
+* Object 클래스는 모든 클래스의 최상위 조상 클래스
+* Object 메소드는 밑에 링크 참고 참고.
+  * http://www.tcpschool.com/java/java_api_object
+  * https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
+
 </div>
 </details>
