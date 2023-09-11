@@ -408,5 +408,70 @@ public class Main {
   * http://www.tcpschool.com/java/java_api_object
   * https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 
+```java
+public class Student{
+
+	private int studentNum;
+	private String studentName;
+	
+	public Student(int studentNum, String studentName) {
+		this.studentNum = studentNum;
+		this.studentName = studentName;
+	}
+
+    @Override
+	public boolean equals(Object obj) {
+
+		if(obj instanceof Student) {
+			Student std = (Student)obj;
+			if(this.studentNum == std.studentNum) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+    @Override
+	public int hashCode() {
+		return studentNum;
+	}
+}
+```
+
+* studentNum 같은 상황일 경우의 로직을 추가할 때 Student가 obj의 instancof에 해당할 경우
+* Student 의 힙메모리에 담긴 객체 std = (다운캐스팅 Student) obj 는 같음.
+* 만약 현재 Student의 studentNum 와 힙메모리에 담긴 객체 std studentNum이 같으면 true를 반환
+  
+```java
+public class EqualsTest {
+    public static void main(String[] args){
+		Student st1 = new Student(100, "Lee");		
+		Student st2 = new Student(100, "Son");
+
+		System.out.println(st1.equals(st2));    // true
+		System.out.println(st1 == st2);         // false
+
+		System.out.println(st1.hashCode());     // 100
+		System.out.println(st2.hashCode());     // 100
+		
+		System.out.println(System.identityHashCode(st1));   // ~~~
+		System.out.println(System.identityHashCode(st2));   // ~~~
+    }
+}
+```
+
+* equals는 Object 에서 재정의하여 사용한 로직을 반영하여 주소값을 비교했을 때 true 가 나옴.
+* hashCode 같은 경우도 studentNum 을 return 받았기 때문에 100 이라는 값이 나옴.
+* System 에서 static 메소드로 정의해놓은 identityHashCode 메소드는 실제 HashCode의 주소값을 알려주므로 다른 값이 나옴.
+
+</div>
+</details>
+
+<details>
+<summary style="font-size:20px">StringBuilder, StringBuffer, textblock</summary>
+<div markdown="1">
+
 </div>
 </details>
