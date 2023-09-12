@@ -526,3 +526,47 @@ public class StringBuilderTest {
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">Class 클래스</summary>
+<div markdown="1">
+
+#### 개요 
+
+* Class 클래스는 무엇이고 어디에 쓰이는지 알아보기위함.
+
+#### Class 클래스
+
+* 동적 로딩이 가능함.
+  * 컴파일 시 데이터 타입이 bing 되지않고 실행중에 데이터 타입을 binding함.
+  * 런타임시에 원하는 클래스를 로딩하여 binding 할 수 있다는 장점이 있음.
+  * 컴파일 시에 타입이 정해지지 않으므로 동적 로싱시 오류가 발생하면 프로그램 장애 발생 가능성이 있음.
+
+```java
+public class StringTest {
+	
+	public static void main(String[] args) throws ClassNotFoundException {
+		
+		Class c = Class.forName("java.lang.String");
+		System.out.println(c);
+		
+		Constructor[] cons = c.getConstructors();
+		for(Constructor co : cons) {
+			System.out.println(co);
+		}
+		
+		Method[] me =  c.getMethods();
+		for(Method method : me) {
+			System.out.println(method);
+		}
+	}
+}
+```
+
+* Class객체 생성 후 Class.forName 을 통해 java.lang.String에 관한 class들을 불러올 수 있음.
+* 마찬가지로 Class 클래스에 담긴 생성자 getConstructors, 메소드 getMethods 를 통해 불러올 수 있음. (실제로는 잘 안쓰임,, 알아만두자)
+
+* Class 관련 문서는 아래 참고.
+* https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html
+</div> 
+</details>
