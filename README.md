@@ -570,3 +570,130 @@ public class StringTest {
 * https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html
 </div> 
 </details>
+
+<details>
+<summary style="font-size:20px">Stack</summary>
+<div markdown="1">
+
+#### 스택
+
+* Stack 은 Last In First Out LIFO(후입선출) 구조.
+* 맨 마지막 위치(top) 에서만 자료를 추가, 삭제 꺼내올 수 있음 (중간의 자료를 꺼낼 수 없음)
+* ex) 가장 최근의 자료를 찾아올 때, 게임에서 히스토리를 유지하고 이를 무를 때 사용, 택배상자가 쌓여있는 모양 
+
+#### 구현방법
+
+* 크게 배열을 이용하는방법과 리스트를 이용하는방법 두 가지로 나뉨.
+
+![Alt text](image-2.png)
+
+* top 변수는 배열의 가장 마지막으로 저장된 요소의 index를 저장함.
+* 처음에 아무값도 저장하지 않는 상태이면 -1을 저장.
+* push 하면 top 은 index에서 + 1 저장
+* pop 하면 top은 index - 1 저장
+
+```java
+package ch05;
+
+public class ArrayStack {
+
+	int size;
+	int top = -1;
+	Object[] Arr;
+	
+	public ArrayStack(int size) {
+		this.size = size;
+		Arr = new Object[size];
+	}
+	
+	public boolean isEmpty() {
+		return top == -1;
+	}
+	
+	public boolean isFull() {
+		return this.size == this.top + 1;
+	}
+	
+	public void push(int data) {
+		
+		if(isFull()) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
+		this.Arr[++top] = data;
+	}
+	
+	public Object pop() {
+		
+		if(isEmpty()) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		
+		Object poppedData = Arr[top];
+		Arr[top--] = null;
+		
+		return poppedData;
+	}
+	
+	public Object peek() {
+		if(isEmpty()) {
+			return null;
+		}else {
+			return this.Arr[top];
+		}
+	}
+	
+}
+```
+
+* push
+  * 배열의 요소가 가득찼는지 판별해주는 ifFull()
+  * Arr배열의 탑이 1씩 증가하는 값은 data에 담음.
+* pop
+  * 배열의 요소가 비었는지 판별해주는 isEmpty()
+  * top index에 위치하는 Arr배열값 return
+  * 탑이 1씩 감소함.
+
+
+```java
+package ch05;
+
+public class Main {
+
+	public static void main(String[] args) {
+        System.out.println("배열로 구현한 stack");
+        ArrayStack arrayStack = new ArrayStack(1000);
+        System.out.println("1,2,3,4,5 순으로 push()");
+        arrayStack.push(1);
+        arrayStack.push(2);
+        arrayStack.push(3);
+        arrayStack.push(4);
+        arrayStack.push(5);
+
+        System.out.print("stack 가장 위에 있는 데이터: ");
+        System.out.println(arrayStack.peek());
+
+        int arrayindex = arrayStack.top;
+        for (int i = 0; i <= arrayindex; i++) {
+            System.out.print("pop된 데이터: ");
+            System.out.println(arrayStack.pop());
+        }
+	}
+}
+
+#### 결과
+
+```
+배열로 구현한 stack
+1,2,3,4,5 순으로 push()
+stack 가장 위에 있는 데이터: 5
+pop된 데이터: 5
+pop된 데이터: 4
+pop된 데이터: 3
+pop된 데이터: 2
+pop된 데이터: 1
+
+```결
+
+</div>
+</details>
