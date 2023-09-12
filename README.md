@@ -470,8 +470,59 @@ public class EqualsTest {
 </details>
 
 <details>
-<summary style="font-size:20px">StringBuilder, StringBuffer, textblock</summary>
+<summary style="font-size:20px">StringBuilder, StringBuffer</summary>
 <div markdown="1">
+
+#### 개요
+
+* StringBuilder, StringBuffer 가 언제 어떻게 쓰이는지 알아보기위함.
+* textblock은 java13부터 지원.
+
+```java
+public class StringTest {
+
+	public static void main(String[] args) {
+		String java = new String("java");
+		String android = new String("android");
+		
+		System.out.println(System.identityHashCode(java));  //2104457164
+
+
+		java = java.concat(android);
+		
+		System.out.println(System.identityHashCode(java));  //1521118594
+	}
+	
+}
+```
+
+* 위의 코드에서 java를 새로 정의해서 사용하면 메모리가 새로 생성돼어 비효율적임.
+* 그래서 이 때 StringBuilder, StringBuffer 를 사용함.
+
+#### StringBuilder, StringBuffer
+
+* 문자열을 여러번 연결하거나 변경할 때 사용하면 유용하게 쓰임.
+* 새로운 인스턴스를 생성하지 않고 내부적으로 가변적인 char[] 멤버 변수를 가지며 변경함.
+* 단일 쓰레드에서는 StringBuilder 을 권장, StringBuffer는 멀티 쓰레드 프로그래밍에서 동기화를 보장함.
+
+```java
+public class StringBuilderTest {
+
+	public static void main(String[] args) {
+		String java = new String("java");
+		String android = new String("android");
+
+		StringBuilder builder = new StringBuilder(java);
+		System.out.println(System.identityHashCode(builder));   //2104457164
+		builder.append(android);
+		
+		System.out.println(System.identityHashCode(builder));   //2104457164
+	}
+}
+```
+
+* 계속적으로 가변하기때문에 같은 메모리값을 가지고 있음.
+* 단일 쓰레드 환경에서는 StringBuilder을 사용, 멀티 쓰레드 환경에서 동기화를 하는 경우 StringBuffer를 사용하자.
 
 </div>
 </details>
