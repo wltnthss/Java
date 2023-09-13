@@ -758,14 +758,13 @@ public class StackQueue {
 ```
 
 * euqueue 함수 호출 시 꽉 찼는지 확인(isFull)
-* rear 가 가르키는 index로 접근 후, main에서 호출하는 data를 받아 데이터에 삽임함.
-* rear값은 1씩 증가하며, rear값이 배열의 크기를 넘지 못하도록 나머지 연산 진행.
+  * rear 가 가르키는 index로 접근 후, main에서 호출하는 data를 받아 데이터에 삽임함.
+  * rear값은 1씩 증가하며, rear값이 배열의 크기를 넘지 못하도록 나머지 연산 진행.
 
 * dequeue 함수 호출 시 큐가 비어있는지 확인(isEmpty)
-* front가 가리키는 index로 접근하여 데이터를 임시저장.
-* 다시 해당 index로 접근하여 null을 삽입 후 front 1씩 증가
-* front값이 배열의 크기를 넘지 못하도록 나머지 연산 진행.
-
+  * front가 가리키는 index로 접근하여 데이터를 임시저장.
+  * 다시 해당 index로 접근하여 null을 삽입 후 front 1씩 증가
+  * front값이 배열의 크기를 넘지 못하도록 나머지 연산 진행.
 
 ```java
 package ch05;
@@ -789,6 +788,7 @@ public class QueueMain {
 	}
 }
 ```
+#### 결과
 
 ```
 ------Stack으로 구현한 Queue------
