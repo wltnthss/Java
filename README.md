@@ -697,3 +697,108 @@ pop된 데이터: 1
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">Queue</summary>
+<div markdown="1">
+
+#### Queue
+
+* 맨 앞에서 자료를 꺼내거나 삭제하고, 맨 뒤에서 자료를 추가함.
+* First In First Out (선입선출) 구조
+* ex) 줄서기, 운영체제의 프로세스 관리 등에서 사용.
+
+```java
+package ch05;
+
+public class StackQueue {
+    int length;
+    int front = 0;
+    int rear = 0;
+    Object[] queue;
+
+    public StackQueue(int length) {
+        this.length = length;
+        this.queue = new Object[length];
+    }
+
+    public boolean isFull(){
+        return front == rear && queue[front] != null;
+    }
+
+    public boolean isEmpty(){
+        return front == rear && queue[front] == null;
+    }
+
+    public void enqueue(Object data){
+        if(isFull()) {
+            System.out.println("큐에 더 이상 데이터를 저장할 공간이 없습니다.");
+            return;
+        }
+        queue[rear++] = data;
+        rear = rear % queue.length;
+    }
+
+    public Object dequeue(){
+        if(isEmpty()){
+            System.out.println("큐가 비어있습니다");
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        Object dequeuedData = queue[front];
+        queue[front++] = null;
+        front = front % queue.length;
+
+        return dequeuedData;
+    }
+
+    public Object peek(){
+        return queue[front];
+    }
+}
+```
+
+* euqueue 함수 호출 시 꽉 찼는지 확인(isFull)
+* rear 가 가르키는 index로 접근 후, main에서 호출하는 data를 받아 데이터에 삽임함.
+* rear값은 1씩 증가하며, rear값이 배열의 크기를 넘지 못하도록 나머지 연산 진행.
+
+* dequeue 함수 호출 시 큐가 비어있는지 확인(isEmpty)
+* front가 가리키는 index로 접근하여 데이터를 임시저장.
+* 다시 해당 index로 접근하여 null을 삽입 후 front 1씩 증가
+* front값이 배열의 크기를 넘지 못하도록 나머지 연산 진행.
+
+
+```java
+package ch05;
+
+public class QueueMain {
+	public static void main(String[] args) {
+        System.out.println("------Stack으로 구현한 Queue------");
+        StackQueue stackQueue = new StackQueue(100);
+        int numberOfData = 5;
+
+        for (int i = 0; i < numberOfData; i++) {
+            stackQueue.enqueue(i);
+            System.out.printf("%d를 Queue에 enqueue\n", i);
+        }
+
+        System.out.println("peek연산 결과: " + stackQueue.peek());
+
+        for (int i = 0; i < numberOfData; i++) {
+            System.out.print(stackQueue.dequeue() + " ");
+        }
+	}
+}
+```
+
+```
+------Stack으로 구현한 Queue------
+0를 Queue에 enqueue
+1를 Queue에 enqueue
+2를 Queue에 enqueue
+3를 Queue에 enqueue
+4를 Queue에 enqueue
+peek연산 결과: 0
+0 1 2 3 4 
+```
+</div>
+</details>
