@@ -802,3 +802,110 @@ peek연산 결과: 0
 ```
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">Generic</summary>
+<div markdown="1">
+
+#### 개요
+
+* 변수 사용시 자료형을 지정하는데 사용할 때 쓰이는게 제네릭으로 알고있음.
+* ex) ArrayList<Integer> arraylist = new ArrayList<Integer>(); 이런식으로 타입 지정해서 사용하곤 했음.
+* Generic에 대해서 자세히 알아보기 위함.
+
+#### Generic
+
+* 클래스 내부에서 사용할 데이터 타입을 외부에서 지정하는 기법임.
+* 변수를 선언할 때 변수의 타입을 지정해주듯이 객체에 타입을 지정해주는 것.
+* 컴파일 타임에 타입 검사를 통한 예외 방지
+  * ex) Object를 객체로 만들었을 때 다운캐스팅의 오류를 실행할 문제점.
+* 불필요한 캐스팅을 없애 성능 향상
+  * ex) 미리 타입을 지정하고 제한해놓음으로써 형 변환의 번거로움을 줄여 가독성 및 오버헤드 문제점을 막아줌.
+
+#### Generic 사용방법
+
+* 자료형 매개변수 T(type parameter) : 클래스를 사용하는 시점에 자료형을 지정. static 변수는 사용할 수 없음.
+
+![Alt text](image-3.png)
+
+#### 자료형 매개변수를 이용한 컴파일 타임시 타입 검사를 통한 예외 방지
+
+```java
+class Apple {}
+class Banana {}
+
+class FruitBox {
+    // 모든 클래스 타입을 받기 위해 최고 조상인 Object 타입으로 설정
+    private Object[] fruit;
+
+    public FruitBox(Object[] fruit) {
+        this.fruit = fruit;
+    }
+
+    public Object getFruit(int index) {
+        return fruit[index];
+    }
+}
+```
+```java
+public static void main(String[] args) {
+    Apple[] arr = {
+            new Apple(),
+            new Apple()
+    };
+    FruitBox box = new FruitBox(arr);
+
+    Apple apple = (Apple) box.getFruit(0);
+    Banana banana = (Banana) box.getFruit(1);
+}
+```
+
+* 실행시 ClassCastException 런타임 에러 발생. 이와 같은 경우에는 빨간줄로 에러를 알려주지 않음 ! !
+* 이유는 Apple 객체 타입을 FruitBox에 넣었는데 Banana를 형변환해서 가져오려고 했기 때문에 발생한 에러.
+* 앞에 형변환을 (Object)로 다운캐스팅해도되지만 이 떄 제네릭을 사용하면 실수를 미연에 방지할 수 있음.
+* 밑에 코드와 같이 자료형 매개변수를 지정하여 제내릭을 사용하자.
+
+```java
+class FruitBox<T> {
+    private T[] fruit;
+
+    public FruitBox(T[] fruit) {
+        this.fruit = fruit;
+    }
+
+    public T getFruit(int index) {
+        return fruit[index];
+    }
+}
+```
+
+* 이 처럼 타입 파라미터로 매개변수를 지정해줌으로써 잘못된 타입이 사용될 수 있는 문제를 제거함.
+
+#### 불필요한 캐스팅을 없앰으로써 성능 향상
+
+```java
+Apple[] arr = { new Apple(), new Apple(), new Apple() };
+FruitBox box = new FruitBox(arr);
+
+// 가져온 타입이 Object 타입이기 때문에 일일히 다운캐스팅을 해야함 - 쓸데없는 성능 낭비
+Apple apple1 = (Apple) box.getFruit(0);
+Apple apple2 = (Apple) box.getFruit(1);
+Apple apple3 = (Apple) box.getFruit(2);
+```
+
+* Apple 배열을 FruitBox의 Object 배열 객체에 넣고, 가져올 때는 다운캐스팅을 통해 가져와야했음.
+
+```java
+FruitBox<Apple> box = new FruitBox<>(arr);
+
+Apple apple = box.getFruit(0);
+Apple apple = box.getFruit(1);
+Apple apple = box.getFruit(2);
+```
+
+* 미리 형변환을 지정해놓음으로써 형변환의 번거로움을 제거함과 동시에 타입 검사에 들어가는 메모리를 줄일 수 있음.
+
+#### 잘 정리되어있는 링크 참고.
+* https://inpa.tistory.com/entry/JAVA-%E2%98%95-%EC%A0%9C%EB%84%A4%EB%A6%ADGenerics-%EA%B0%9C%EB%85%90-%EB%AC%B8%EB%B2%95-%EC%A0%95%EB%B3%B5%ED%95%98%EA%B8%B0
+</div>
+</details>
