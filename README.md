@@ -909,3 +909,86 @@ Apple apple = box.getFruit(2);
 * https://inpa.tistory.com/entry/JAVA-%E2%98%95-%EC%A0%9C%EB%84%A4%EB%A6%ADGenerics-%EA%B0%9C%EB%85%90-%EB%AC%B8%EB%B2%95-%EC%A0%95%EB%B3%B5%ED%95%98%EA%B8%B0
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">HashMap</summary>
+<div markdown="1">
+
+#### HashMap
+
+![Alt text](image-4.png)
+
+* HashMap 은 Map을 구현하여 Map과 유사한 특징을 가지고 있음.
+* Map과 HashMap은 Key와 Value 두 쌍으로 데이터를 보관하는 자료구조
+* HashMap은 key와 value를 하나의 쌍(entry) 로 저장하는 구조이며, 해싱을 사용하기 때문에 좋은 성능을 가짐.
+
+```java
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+public class TestCode {
+	public static void main(String[] args) {
+		HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
+		
+		hashMap.put("A", 101);
+		hashMap.put("B", 102);
+		hashMap.put("C", 103);
+		
+		System.out.println(hashMap);	//{A=101, B=102, C=103}
+		
+		System.out.println(hashMap.get("A"));	// 101
+		
+		System.out.println("---- entrySet() 사용");
+		for(Entry<String, Integer> entry : hashMap.entrySet()) {
+			System.out.println("Key : " + entry.getKey() + " value : " + entry.getValue());
+		}
+		System.out.println("---- keySet() 사용");
+		for(String i : hashMap.keySet()) {
+			System.out.println("key : " + i + " value : " + hashMap.get(i));
+		}
+		/*
+		 * key와 value 둘 다 필요할경우 entrySet을 사용하고 key값만 필요할 경우 keySet을 활용
+		 * keySet도 hashMap.get() 메소드를 통해 가져올 수 있으며 주로 사용하지만
+		 * key값을 이용해서 value를 찾는 과정에서 시간이 소요되므로 성능상 entrySet()이 유리함.
+		 */
+		System.out.println("---- Iterator entrySet() 사용");
+		Iterator<Entry<String, Integer>> entries = hashMap.entrySet().iterator();
+		while(entries.hasNext()) {
+			Map.Entry<String, Integer> entry = entries.next();
+			System.out.println("Key : " + entry.getKey() + " value : " + entry.getValue());
+		}
+		System.out.println("---- Iterator keySet() 사용");
+		Iterator<String> keys = hashMap.keySet().iterator();
+		while(keys.hasNext()) {
+			String key = keys.next();
+			System.out.println("Key : " + key + " value : " + hashMap.get(key));
+		}
+	}
+}
+```
+
+```
+{A=101, B=102, C=103}
+101
+---- entrySet() 사용
+Key : A value : 101
+Key : B value : 102
+Key : C value : 103
+---- keySet() 사용
+key : A value : 101
+key : B value : 102
+key : C value : 103
+---- Iterator entrySet() 사용
+Key : A value : 101
+Key : B value : 102
+Key : C value : 103
+---- Iterator keySet() 사용
+Key : A value : 101
+Key : B value : 102
+Key : C value : 103
+
+```
+</div>
+</details>
