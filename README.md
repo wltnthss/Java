@@ -992,3 +992,162 @@ Key : C value : 103
 ```
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">내부 클래스</summary>
+<div markdown="1">
+
+#### 내부 클래스
+
+* 하나의 클래스 내부에 선언된 또 다른 클래스.
+* 오로지 클래스 메소드내에서 선언되어 사용된다면 클래스 내부에 넣어줌으로써 캡슐화를 적용할 수 있는 장점.
+* instance class, static class, local class, anonymous class 4가지가 있음.
+  
+```java
+package ch01;
+
+class OutClass{
+	
+	private int num = 10;
+	private static int sNum = 20;
+	private InClass inClass;
+	
+	public OutClass(){
+		inClass = new InClass();
+	}
+	
+	
+	private class InClass{
+		
+		int iNum = 100;
+		
+		//static int sInNum = 500;	// OutClass가 먼저 선언되어야하므로 오류
+		
+		void inTest() {
+			
+			System.out.println("OutClass num = " + num + "(외부 클래스 인스턴스 변수");
+			System.out.println("OutClass sNum = " + sNum + "(외부 클래스 스태틱 변수");
+			System.out.println("InClass inNum = " + iNum + "(내부 클래스 인스턴스 변수");
+		}
+	}
+	
+	public void usingClass() {
+		inClass.inTest();
+	}
+}
+public class InnterTest {
+
+	public static void main(String[] args) {
+		
+		OutClass outClass = new OutClass();
+		outClass.usingClass();
+	}
+
+}
+```
+
+#### 결과
+```
+OutClass num = 10(외부 클래스 인스턴스 변수)
+OutClass sNum = 20(외부 클래스 스태틱 변수)
+InClass inNum = 100(내부 클래스 인스턴스 변수)
+```
+
+* OutClass 인스턴스 변수 num과, 스태틱 변수 sNum, InClass 객체 생성, OutClass 가 생성될 때 inClass 생성됨.
+* OutClass 의 인스턴스 클래스인 InClass를 생성
+* InClass 에서는 내부 인스턴스 변수 iNum 생성.
+* InClass 에 선언한 inTest() 메소드를 호출하려면 OutClass 에서 선언한 usingClass() 를 이용하여 호출함.
+
+```java
+class InClass
+```
+
+```java
+public class InnterTest {
+
+	public static void main(String[] args) {
+		OutClass.InClass inClass = outClass.new InClass();
+		inClass.inTest();
+	}
+
+}
+```
+
+* OutClass에서 선언한 InClass 의 private을 지우고 class로만 선언할 경우
+* 외부클래스.내부클래스 형식으로 내부클래스를 초기화하여 사용할 수도 있음.
+* 하지만 내부 클래스는 다른 클래스에서 직접 사용하는 것보단 외부 클래스에서 사용하는 것이 일반적이고,
+* 위와 같이 메인 코드와 같이 내부 클래스의 인스턴스를 다른 클래스에서 만드는 경우는 드뭄.
+
+```java
+
+// 정적 내부 클래스 생성
+static class InStaticClass{
+    
+    int iNum = 100;
+    static int sInNum = 200;
+    
+    void inTest() {
+        
+        //System.out.println("OutClass num = " + num + "(외부 클래스 인스턴스 변수)");
+        /*
+        * 외부 클래스와 상관없이 만들어질 수 있기 때문에 OutClass에 있는 인스턴스 변수는 사용 불가능함.
+        */
+        System.out.println("InClass iNum = " + iNum + "(내부 클래스 인스턴스 변수)");
+        System.out.println("OutClass sNum = " + sNum + "(외부 클래스 스태틱 변수)");
+        System.out.println("InClass sInNum = " + sInNum + "(내부 클래스 스태틱 변수)");
+    }		
+
+    static void sTest() {
+
+        //System.out.println("InClass iNum = " + iNum + "(내부 클래스 인스턴스 변수)");
+        /*
+        * static class의 static 메소드는 클래스가 생성되지 않아도 사용할 수 있으므로 사용 불가능함.
+        */
+        System.out.println("OutClass sNum = " + sNum + "(외부 클래스 스태틱 변수)");
+        System.out.println("InClass sInNum = " + sInNum + "(내부 클래스 스태틱 변수)");
+    }
+}
+```    
+
+* static 키워드가 붙은 static class InStaticClass 내부 클래스 생성.
+* 외부 클래스에 있는 인스턴스 멤버에는 접근이 불가함(why? 외부 클래스가 생성이 안되었을 수 있으므로)
+  
+* static void sTest 내부 클래스에 static 메소드 sTest() 생성.
+* 내부 클래스의 인스턴스 변수 사용 불가능. InStaticClass가 생성되지 않아도 사용할 수 있는 전제가 있으므로.
+  
+```java
+public class InnterTest {
+
+	public static void main(String[] args) {
+		OutClass.InStaticClass sInClass = new OutClass.InStaticClass();
+		sInClass.inTest();
+		
+		System.out.println();
+		
+		OutClass.InStaticClass.sTest();		// 클래스 생성과 무관하게 바로 호출이 가능함.
+	}
+
+}
+```
+
+#### 결과
+
+```
+InClass iNum = 100(내부 클래스 인스턴스 변수)
+OutClass sNum = 20(외부 클래스 스태틱 변수)
+InClass sInNum = 200(내부 클래스 스태틱 변수)
+
+OutClass sNum = 20(외부 클래스 스태틱 변수)
+InClass sInNum = 200(내부 클래스 스태틱 변수)
+
+```
+
+#### 요약
+
+* 내부 InClass에 선언된 Static Class는 OutClass 클래스의 인스턴스 변수는 사용할 수 없음.
+  * why? 
+  * 외부 클래스가 생성과 무관하게 호출될 수 있으므로 오류가 발생함.
+* 내부 InClass에 선언된 static void sTest() 메소드는 외부,내부의 스태틱 변수만 사용이 가능함.
+
+</div>
+</details>
