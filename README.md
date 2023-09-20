@@ -1151,3 +1151,133 @@ InClass sInNum = 200(내부 클래스 스태틱 변수)
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">익명 내부 클래스</summary>
+<div markdown="1">
+
+#### 지역 내부 클래스
+
+* 지역 변수와 같이 메소드 내부에서 정의하여 사용하는 클래스
+* 메소드 호출이 끝나면 사용된 지역변수의 유효성은 사라짐.
+
+```java
+class Outer2{
+	
+	int outNum = 100;
+	static int sNum = 200;
+	
+	/*
+	 * 쓰레드를 사용하는 방법은 두 가지가 있음.
+	 * 1. 쓰레드 클래스에서 상속 받아서 사용
+	 * Runnable 인터페이스를 implements 사용해서 사용. 
+	 */
+	Runnable getRunnable(int i) {
+		
+		int num = 10;	// 로컬 변수 num, i는 스택 메모리에 생성됨.
+		
+		class MyRunnable implements Runnable{
+
+			int localNum = 1000;
+			
+			@Override
+			public void run() {
+				
+				//i = 50;
+				//num = 20;
+				/*
+                 * 지역 내부 클래스내에 메소드에서는 변수는 재선언하여 사용할 수 없음. 
+				 * 메소드가 호출되는 시점이랑 클래스 생성주기가 다르기 때문임.
+				 * 메소드는 호출되고 끝나면 스택메모리는 사라짐 (i, num)
+				 * run 이라는 메소드는 또 호출될 수 있는 여지가 있음.
+				 * 그 때 i와 num이 없을 수도 있기 때문에 stack에 잡히면 안됨.
+				 * 위의 i와 num을 사용하려면 final 상수로 사용해야함.
+				 * final로 선언하면 상수 메모리에 호스턴스 area에 잡힘.
+				 * 값을 바꿀 수 없음.
+				 */
+				System.out.println("i = " + i);
+				System.out.println("num = " + num);
+				System.out.println("localNum = " + localNum);
+				
+				System.out.println("outNum = " + outNum + "(외부 클래스 인스턴스 변수)");
+				System.out.println("Outer2.sNum = " + Outer2.sNum + "(외부 클래스 스태틱 변수)");
+			}
+		}
+		return new MyRunnable();
+	}
+}
+```
+
+* 지역 내부 클래스 Runnable에서 선언한 run() 메소드내에서는 변수를 재선언하여 사용할 수 없음 why?
+  * 메소드가 호출되는 시점이랑 클래스 생성주기가 다르기 때문.
+  * 즉, 메소드가 호출되고 나면 스택메모리에 존재하는 i, num 은 사라짐.
+  * 이 때 run이라는 메소드는 다시 호출되는 여지가 있으므로 i와 num이 존재하지 않을 수도 있음.
+* 그러면 왜 위에서 i, num, localNum은 멤버변수로서 선언이 가능한가?
+  * 지역 내부 클래스에서 사용하는 메서드의 지역 변수나 매개 변수는 사실 java에서는 final 상수로 선언되어있기 때문임. 
+   
+```java
+public class AnonumousInnerTest {
+
+	public static void main(String[] args) {
+		 
+		Outer2 outer2 = new Outer2();
+		
+		//outer2.getRunnable(100).run();
+		Runnable runnable = outer2.getRunnable(100);
+		runnable.run();
+	}
+
+}
+```
+
+```
+i = 100
+num = 10
+localNum = 1000
+outNum = 100(외부 클래스 인스턴스 변수)
+Outer2.sNum = 200(외부 클래스 스태틱 변수)
+```
+
+#### 익명클래스
+
+* 이름이 없는 클래스며, 하나의 인터페이스나 추상 클래스를 구현하여 반환함.
+* 주로 람다식을 활용하여 사용함.
+
+```java
+class MyRunnable implements Runnable{
+    @Override
+	public void run() {
+        ...
+    }
+}
+return new MyRunnable();
+```
+
+* 지역 내부 클래스에서 사용한 MyRunnable 은 호출할 때 Outer2 클래스에서 outer2.getRunnable() 호출함.
+* 그러면 여기서 MyRunnable은 존재할 이유가 없음. 그러므로 아래와 같은 익명클래스로 사용이 가능함.
+
+```java
+return new Runnable(){
+    @Override
+	public void run() {
+        ...
+    }
+};
+```
+
+* 위와 같이 MyRunnable 클래스를 구현할 필요가 없으므로 return new Runnable()로 구현할 수 있음.
+
+```java
+Runnable runnable= new Runnable() {
+			
+    @Override
+    public void run() {
+        ...
+    }
+};
+```
+
+* 위와 같은 방법으로 Runnable 인터페이스에 대한 변수를 선언하여 사용도 가능함. (기능은 위와 동일.)
+
+</div>
+</details>
