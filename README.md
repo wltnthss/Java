@@ -1596,6 +1596,56 @@ public class CustomerTest {
 
 * Customer Class 에는 name, age, cost 를 private로 선언 후에 이용.
 * 위와 같이 총 비용 계산, filter, map, sorted, forEach 를 통해 배열은 stream을 통해 쉽게 계산이 가능함.
+BufferedReader
+</div>
+</details>
+
+<details>
+<summary style="font-size:20px">BufferedReader, BufferedWriter</summary>
+<div markdown="1">
+
+#### 개요
+
+* 백준 알고리즘 문제 풀면서 Scanner 를 사용할 떄 **시간초과** 발생하는 문제가 발생했는데 BufferedReader를 써야된다고 들음.
+* why?
+  * Scanner는 입력을 읽는 과정에서 정규표현식을 적용(Scanner 를 타고 들어가면 볼 수 있음), 분할, 파싱을 직접 제공함.
+  * 반면에 BufferedReader는 모든 입력을 Char형으로 버퍼를 사용하여 받으므로, 하나의 글자가 아닌 전체 입력에 대해서 전달되므로 속도가 빠름.
+  
+![Alt text](image-6.png)
+
+#### BufferedReader
+
+* 그래서 BufferedReader 의 Buffer 와 Reader는 뭘까?
+  * **Buffer** : 데이터가 전송될 때 일시적으로 저장되는 메모리 영역.
+  * ex) 지하철에 비교했을 때 매번 사람들이 들어올 때마다 이동하는게 아닌 어느정도 사람이 모이고 지하철이 와야 이동이 가능한 점.
+  * buffer를 사용하면 문자를 묶어서 한 번에 전달하므로 성능이 향상되고, 사용자가 문자를 잘못 입력했을 경우 수정할 수 있음.
+
+#### 사용방법
+
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+int userInputNumber = Integer.parseInt(br.readLine());
+```
+
+* BufferedReader는 String 타입만을 다루기 때문에 int형은 형변환이 필요함.
+* Stream ?? 자바에서 나온 스트림인지?
+  * 여기서 스트림은 파일을 읽거나 쓸 때, 데이터가 전송되는 통로라고 생각.
+* 즉 BufferedReader는 **Byte타입으로 전송되는 데이터를 Char형으로 변환하고, 다시 버퍼링을 적용하여 Char 데이터를 반환해주는 과정**
+
+#### BufferedWriter
+
+```java 
+BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out)); // 선언
+bw.write("Hello World");
+bw.flush(); // write로 담은 내용 출력 후, 버퍼를 비움.
+bw.close(); 
+```
+
+* BufferedWriter에서 사용되는 메소드는 write(), flush(), close() 세 가지가 있음.
+* write()로 출력할 내용을 담고, flush() 로 버퍼를 비워내는 동시에 콘솔을 출력함.
+* flush? 왜할까?
+  * output stream의 실행으로 버퍼 되었다면, 버퍼된 바이트는 즉시 사용될 목적으로 쓰여져야함.
+  * 즉, 스트림을 닫지 않은 상태에서 바이트를 보내고 싶은 경우에 플러쉬를 사용함.
 
 </div>
 </details>
