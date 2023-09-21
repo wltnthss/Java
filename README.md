@@ -1505,5 +1505,65 @@ ji son soo
 > 스트림이란???  **배열, 컬렉션등을 사용할 때 편리한 연산을 수행하도록 도와주는 것.**    
 > 익명 객체이기때문에 한번 사용하고나서 재선언해서 사용해야함.
 
+#### reduce() 연산
+
+* 정의된 연산이 아닌 프로그래머가 직접 구현한 연산을 적용할 때 reduce() 사용함.
+
+```java
+import java.util.Arrays;
+import java.util.function.BinaryOperator;
+
+class CompareString implements BinaryOperator<String> {
+
+	// 두 매개변수 s1, s2는 위에서 정의한 제네릭<String> 값을 그대로 받아옴.
+	@Override
+	public String apply(String s1, String s2) {
+		if(s1.getBytes().length >= s2.getBytes().length ) {
+			return s1;
+		}
+		else {
+			return s2;
+		}
+	}
+	
+}
+
+public class ReduceTest {
+
+	public static void main(String[] args) {
+		
+		// 람다식으로 직접 reduce 사용하는 방법
+		String[] greetings = {"Hello", "Java", "이게 제일 기려나", "it's very long sentence."};
+		
+		System.out.println(Arrays.stream(greetings).reduce("", (s1, s2) -> {
+				if(s1.getBytes().length >= s2.getBytes().length ) {
+					return s1;
+				}
+				else {
+					return s2;
+				}
+			})
+		);
+		
+		System.out.println();
+		
+		// BinaryOperator 인터페이스 구현
+		String str = Arrays.stream(greetings).reduce(new CompareString()).get();
+		System.out.println(str);
+	}
+}
+```
+
+#### 결과
+
+```java
+it's very long sentence.
+
+it's very long sentence.
+```
+
+* BinaryOperator를 사용한 클래스를 .reduce(new CompareString()) 으로 사용함으로써 apply 부분이 호출되며 수행됨.
+* 람다식이 길어지면 BinaryOperator 를 구현해보자.
+
 </div>
 </details>
