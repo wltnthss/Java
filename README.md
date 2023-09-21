@@ -1325,10 +1325,65 @@ public class CalcTest{
 #### 결과
 ```
 8
-4
+4 
 12
 3
 ```
 
+#### 객체지향 프로그래밍 vs 람다
+
+* 문자열 두 개 연결하여 출력하는 예제를 객체지향 프로그래밍과 람다식으로 구현해보자.
+
+```java
+public class StringConcatImpl implements StringConcat{
+
+	@Override
+	public void makeString(String s1, String s2) {
+		System.out.println(s1 + "," + s2);
+	}
+}
+```
+
+```java
+@FunctionalInterface
+public interface StringConcat {
+
+	public void makeString(String s1, String s2);
+}
+```
+
+```java
+public class StringConcatTest {
+
+	public static void main(String[] args) {
+		
+		// 일반적인 인터페이스 구현방법
+		StringConcatImpl concatImpl = new StringConcatImpl();
+		concatImpl.makeString("Interface" , "Impl");
+		
+		// 람다식 활용 (StringConcatImpl 클래스 생성 필요하지 않음)
+		StringConcat stringConcat = (s1, s2) -> {
+			System.out.println(s1 + "," + s2);
+		};
+		stringConcat.makeString("Lamda", "Impl");
+		
+		 // 실질적으로 내부에는 익명클래스가 만들어지고 새로 사용가능함.
+		StringConcat concat = new StringConcat() {
+			
+			@Override
+			public void makeString(String s1, String s2) {
+				System.out.println(s1 + "," + s2);
+			}
+		};
+		concat.makeString("New", "Lamda");
+	}
+}
+```
+
+* 일반적으로 인터페이스 구현방법과 람다식 활용 예제
+* 제일 많이 사용하는 방법은 규약과 같은 interface에 정의해둔 것을 실제로 사용할 StringConcatImpl 에서 오버라이딩을 통해 구현하고 객체를 만들어사용.
+* 람다는 StringConcatImpl 클래스 생성없이 간편하게 1회사용하기 때문에 편함.
+* 자바는 객체를 사용하기 때문에 람다도 실질적으로는 내부에 익명클래스를 통해 사용가능함.
+  
 </div>
 </details>
