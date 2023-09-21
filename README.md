@@ -1565,5 +1565,37 @@ it's very long sentence.
 * BinaryOperator를 사용한 클래스를 .reduce(new CompareString()) 으로 사용함으로써 apply 부분이 호출되며 수행됨.
 * 람다식이 길어지면 BinaryOperator 를 구현해보자.
 
+#### 예제 활용
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerTest {
+
+	public static void main(String[] args) {
+
+		Customer customerS = new Customer("Son", 29, 100);
+		Customer customerP = new Customer("Park", 19, 60);
+		Customer customerH = new Customer("Hong", 42, 150);
+		
+		List<Customer> list = new ArrayList<Customer>();
+		list.add(customerS);
+		list.add(customerP);
+		list.add(customerH);
+		
+		// 총 비용 계산
+		int totalCost = list.stream().mapToInt(n -> n.getCost()).sum();
+		System.out.println(totalCost);
+		
+		// 고객 중 20세 이상 정렬하여 계산
+		list.stream().filter(s -> s.getAge() >= 20).map(c -> c.getName()).sorted().forEach(r -> System.out.println(r));
+	}
+}
+```
+
+* Customer Class 에는 name, age, cost 를 private로 선언 후에 이용.
+* 위와 같이 총 비용 계산, filter, map, sorted, forEach 를 통해 배열은 stream을 통해 쉽게 계산이 가능함.
+
 </div>
 </details>
