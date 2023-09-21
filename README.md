@@ -1387,3 +1387,123 @@ public class StringConcatTest {
   
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">스트림</summary>
+<div markdown="1">
+
+#### 스트림  
+
+**JAVA Colletion Data 상속 구조**
+
+![Alt text](image-5.png)
+
+* 스트림은 위와 같은 데이터 컬렉션 반복, 추출등 멋지게 처리하는 기능.
+  * Stream : **데이터 처리 연산을 지원하도록 소스에서 추출된 연속된 요소**
+  * 여기서 데이터 처리 연산은 뭘까?
+    * 함수형 프로그래밍 언어에서 일반적으로 지원하는 것과 비슷함. filter, map, reduce, find, sort 등등..
+    * 컬렉션, 배열, I/O 자원 등의 데이터 제공 소스로부터 데이터를 소비함.
+    * 즉, 컬렉션의 주제는 데이터이고, 스트림의 주제는 계산이라고 할 수 있음.
+* 배열이나 컬렉션 등에 대한 여러 가지 연산들의 처리를 추상화(일관성 있게함)하여 동일한 방식으로 연산될 수 있도록 도와줌.
+* 한번 생성하고 사용한 스트림은 다시 생성해야함.
+
+```java
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
+public class IntArrayStreamTest {
+
+	public static void main(String[] args) { 
+		
+		int[] arr = {1,2,3,4,5};
+		
+		// 주로 사용하던 방식
+		for(int n : arr) {
+			System.out.print(n + " ");
+		}
+		System.out.println();
+		// Arrays class의 .stream 생성의 forEach 를 사용하면 하나씩 꺼낼 수 있음.
+		// forEach 안에는 임의의 변수 n이 하나씩 출력되도록.
+		Arrays.stream(arr).forEach(n -> System.out.print(n + " "));
+		
+		System.out.println();
+		// IntStream에는 여러가지 기능들이 있음.
+		// is를 재활용할 수는 없음. 연산 후 소모되기떄문에.
+		IntStream is = Arrays.stream(arr);
+		is.forEach(n -> System.out.print(n + " "));
+		
+		// 재사용하려면 또 다른 선언을 해줘야함.
+		int sum = Arrays.stream(arr).sum();
+		System.out.println(sum);
+	}
+}
+```
+
+* Arrays의 stream에는 다양한 함수들이 있어 직접 사용해보면서 알아가야함.
+* forEach가 가장 유용하게 쓰이는 듯?
+
+#### 결과
+```
+1 2 3 4 5 
+1 2 3 4 5 
+1 2 3 4 5 
+15
+```
+
+* 스트림은 중간 연산과 최종 연산으로 나눌 수 있음.
+* 중간 연산은 ex) filter(), map(), sorted() 로 조건에 맞는 요솔를 추출(filter) 하거나 반환(map)함.
+* 최종 연산 ex) forEach() 이 호출될 때 중간 연산이 수행되고 결과가 생성됨.
+
+#### filter, map, sorted 사용예제
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class ArratyListStreamTest {
+
+	public static void main(String[] args) {
+
+		List<String> list = new ArrayList<String>();
+		
+		list.add("son");
+		list.add("ji");
+		list.add("soo");
+		
+		// 콜렉션(지금은 list)은 다 스트림을 호출 할 수 있음.
+		Stream<String> stream = list.stream();
+		stream.forEach(s -> System.out.print(s + " "));
+		
+		System.out.println();
+		
+		// filter 사용
+		Stream<String> isS = list.stream();
+		isS.filter(s -> s.contains("s")).forEach(n -> System.out.print(n + " "));
+		
+		System.out.println();
+		
+		// sorted 사용
+		Stream<String> isSorted = list.stream();
+		isSorted.sorted().forEach(s -> System.out.print(s + " "));
+		
+		System.out.println();
+		// map 사용 객체를 선언하지 않고도 익명클래스가 숨어있기 때문에 아래와 같이 사용 가능.
+		list.stream().map(s -> s.length()).forEach(n -> System.out.print(n + " "));
+	}
+}
+```
+
+#### 결과
+```
+son ji soo 
+son soo 
+ji son soo 
+3 2 3 
+```
+
+> 스트림이란???  **배열, 컬렉션등을 사용할 때 편리한 연산을 수행하도록 도와주는 것.**    
+> 익명 객체이기때문에 한번 사용하고나서 재선언해서 사용해야함.
+
+</div>
+</details>
