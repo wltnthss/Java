@@ -1281,3 +1281,54 @@ Runnable runnable= new Runnable() {
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">람다</summary>
+<div markdown="1">
+
+#### 람다
+
+* 익명 함수로 지칭되며 코드의 간결성, 멀티쓰레드를 활용한 병렬처리 등의 이점이 있음.
+* 호출이 까다롭고, 가독성이 안좋은 단점이 존재함.
+
+```java
+@FunctionalInterface
+public interface Calc {
+	
+	public int Calc(int x, int y);
+}
+```
+
+* Calc라는 인터페이스 생성(메인에서 사용하려고)
+* 익명 함수와 매개 변수만으로 구현되므로 인터페이스는 하나의 메소드만 선언해야함.
+* @FunctionalInterface 어노테이션은 함수형 인터페이스라는 의미로 쓰이고, 여러 개의 메소드 사용시 에러 발생함.
+
+```java
+public class CalcTest{
+
+	public static void main(String[] args) {
+		
+		Calc addLamda = (x, y) -> {return x+y;};
+		Calc minusLamda = (x, y) -> {return x-y;};
+		Calc multiLamda = (x, y) -> {return x*y;};
+		Calc divLamda = (x, y) -> {return x/y;};
+		
+		System.out.println(addLamda.Calc(6, 2));
+		System.out.println(minusLamda.Calc(6, 2));
+		System.out.println(multiLamda.Calc(6, 2));
+		System.out.println(divLamda.Calc(6, 2));
+		
+	}
+}
+```
+
+#### 결과
+```
+8
+4
+12
+3
+```
+
+</div>
+</details>
