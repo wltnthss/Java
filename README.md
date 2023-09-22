@@ -1649,3 +1649,133 @@ bw.close();
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">예외 처리</summary>
+<div markdown="1">
+
+#### 개요
+
+* try, catch 또는 exception 처리 하여 프로그램에서의 오류 처리 코드를 짜봤었음.
+* 개념, 원리, 다른 방법을 좀 더 자세히 알아보기위함.
+
+#### 예외처리
+
+* 에러는 크게 컴파일 에러(문법 구문 오류), 런타임 에러(프로그램 실행 중 발생), 논리적 에러(시스템상 버그) 세 가지로 나뉨.
+ 
+![Alt text](image-7.png)
+
+* 실행 시 발생할 수 있는 오류를 두 가지로 구분.
+  * 에러 : 프로그램 코드에 의해서 수습될 수 없는 심각한 오류(OutOfMemoryError, StackOverFlowError) 
+  * 예외 : 프로그램 코드에 의해서 수습될 수 있는 미약한 오류
+
+* 에러는 대처하기 어렵지만 예외는 구현한 로직에 대응 코드를 작성해놓음으로써 비정상적인 종료 혹은 동작을 막을 수 있음.
+* 주로, Exception 클래스 또는 try-catch 문법을 사용함.
+
+#### Exception 클래스
+
+![Alt text](image-8.png)
+
+* Error 클래스는 는 자주 보지 못했지만 Exception 익숙한 에러가 많음...
+* 정말 자주 보던 IndexOutofBoundsException, RuntimeException..NullPointException 등등
+* 위 그림을 심플하게 요약하자면 아래 그림과 같음.
+
+![Alt text](image-9.png)
+
+* Exception 클래스는 다시 RuntimeException(런타임 에러)와 그 외의 클래스 그룹(컴파일 에러)로 나뉨.
+
+* Exception 및 하위 클래스 : 사용자의 실수와 같은 외적인 요인에 의해 발생하는 컴파일 에러
+  * 존재하지 않는 파일의 이름 입력 (FiltNotFoundException)
+  * 클래스 이름 잘못 기재 (ClassNotFoundException)
+  * 입력한 데이터 형식 불일치 (DataFormatException)
+* RuntimeException : 프로그래머의 실수로 발생하는 예외
+  * 배열의 범위를 벗어남 (IndexOutOfBoundsException)
+  * 값이 null인 참조 변수 멤버 호출 (NullPointerException)
+  * 클래스 간의 형 변환 잘못함 (ClassCastException)
+
+#### 예제
+
+```java
+public class ArrayIndexException {
+	
+	public static void main(String[] args) {
+		
+		int[] arr = {1, 2, 3, 4, 5};
+
+		/*
+		 * 간단한 try catch문
+		 * 오류는 나지만 비정상적인 종료는 일어나지 않음.
+		 */
+		try {
+			for(int i=0; i<arr.length+1; i++) {
+				System.out.println(arr[i]);
+			}	
+		}catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println(e.getMessage());
+			System.out.println(e.toString());
+		}
+	}
+}
+```
+
+* 가장 기본적인 try catch 형식이며 오류를 확인하거나 시스템의 비정상적인 종료를 막아줌.
+
+```java
+try {
+    fis = new FileInputStream("a.txt");
+} catch (FileNotFoundException e) {
+    e.printStackTrace();	// 에러가 난 지점을 알려줌
+} finally {
+    try {
+        fis.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    System.out.println("finally");
+}
+System.out.println("end");
+```
+
+* 실무에서 파일 관리를 할 때 가장 많이 사용했던 코드.
+* catch에서 에러가 잡혀도 finally 쪽은 실행이 됨.
+
+#### 다중 예외 처리 
+
+```java
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+public class ThrowsException {
+
+	public Class loadClass(String fileName, String className) throws ClassNotFoundException, FileNotFoundException {
+		
+		FileInputStream fis = new FileInputStream(fileName);
+		Class c = Class.forName(className);
+		return c;
+	}
+	
+	public static void main(String[] args) {
+
+		ThrowsException test = new ThrowsException();
+		
+		try {
+			test.loadClass("a.txt", "java.lang.String");
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		} catch (FileNotFoundException e) {
+			System.out.println(e);
+		} catch( Exception e) {
+			// default 처리 자동 형변환되어 최상위에서 불리어짐. 맨 위에서 사용 불가.
+			e.printStackTrace();
+		}
+		System.out.println("end");
+	}
+}
+```
+ 
+* try catch가 방법이 아닌 Main에서 실제로 사용할 때는 아래와 같이 사용할 수 있음.
+* 최상위 클래스인 Exception 클래스를 사용할 때는 최상위 클래스이므로 맨 위에서는 사용 불가함.
+* 각각의 Exception 이 발생하지 않거나, 정상적으로 발생하면 end 가 표시됨.
+
+</div>
+</details>
