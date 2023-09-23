@@ -1779,3 +1779,290 @@ public class ThrowsException {
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">I/O 스트림</summary>
+<div markdown="1">
+
+#### I/O 스트림 정의
+
+* I/O 스트림은 뭘까 ??
+  * I/O 란???
+    * Input/Ouput 의 약어로 내부 또는 외부 장치와 프로그램 간의 데이터를 전송가능케 하는 지점이라고함.
+  * Stream이란??
+    * 운영체제에 의해 생성되는 가상의 연결고리라고도 함.
+    * 물이 한 뱡향으로 연속적인 흐름을 가지는 형태.(단뱡향 형태)
+    * 먼저 입력된 데이터가 먼저 출력되는 형태(Queue 의 자료구조와 같은 FIFO)
+    * 즉, 데이터를 운반하는 연결통로
+
+#### I/O 스트림 구조
+
+### 입력 스트림과 출력 스트림 
+
+![Alt text](image-11.png)
+
+### 입출력 스트림 예제
+
+```java
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class SystemInTest11 {
+
+	public static void main(String[] args) {
+		
+		System.out.println("알파벳 여러 개를 쓰고 [Enter] 입력 ");
+		
+		int i;
+		
+		try {
+			while((i = System.in.read()) != '\n') {
+				System.out.print((char)i);
+				// 1Byte씩 읽는데 한글 입력하면 2Byte이므로 깨짐 현상.
+				// System.in 은 보조 스트림으로 감싸야 한글 처리 가능함.
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println();
+		int j;
+		
+		try {
+			// Byte를 문자로 바꿔주는 함수, 매개변수로 Byte단위를 받음
+			InputStreamReader irs = new InputStreamReader(System.in);
+			while((i = irs.read()) != '\n') {
+				System.out.print((char)i);
+			}
+		} catch (Exception e) {
+		}
+	}
+}
+```
+
+* read를 통해 읽으면 1byte씩 읽게됨.
+* 위의 try catch 문에서 한글을 입력하게 되면 깨짐
+  * why??
+  * 1바이트씩 읽는데 한글은 2바이트를 읽으므로 꺠짐. 
+  * System.in 은 스트림으로 되어있어 보조 스트림으로 감싸서 사용해야함.
+* 밑에 try catch 문에서 한글을 입력하면 깨지지 않음
+  * InputStreamReader는 Byte를 문자로 받기 때문에 한글을 입력해도 깨지지 않음.
+  * 지금은 System.in 을 매개변수로 사용하고 있는데 파일 InputStream을 감싸면 파일에 있는 한글을 읽을 수가 있음.
+  
+### 바이트 단위 스트림과 문자 단위 스트림
+
+![Alt text](image-12.png)
+
+* FileInputStream은 가장 많이 사용됨. 실제로 실무에서도 몇 번 사용함.
+* FileInputStream 사용방법을 예제를 통해 알아보자.
+
+### FileInputStream 바이트 단위 입출력 스트림 예제
+
+```java
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class FileInputStreamTest1 {
+
+	public static void main(String[] args) {
+		
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream("input.txt");
+			// 세 개를 읽어보고 출력해봄
+			System.out.println((char)fis.read());
+			System.out.println((char)fis.read());
+			System.out.println((char)fis.read());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e2) {
+				// null 일 수도 있으므로 주석 처리시 맨 밑에 end가 안찍힘.
+				System.out.println(e2);
+			}
+		}
+		System.out.println("end");
+		
+	}
+}
+```
+* Byte로 값을 읽는 FileInputStream 에서 input.txt 파일을 읽어보려고 함.
+  * input.txt 안에 값이 있으면 하나의 byte씩 읽어서 출력해라.
+  * input.txt 파일이 없을 때 IOException 문으로 이동. (사실 FileNotFoundException 인데 기억이 안나는 경우 IOException가 상위이므로 넣어줘도 무관함)
+  * IOException 에서 null인데 close를 하는 경우 오류가 발생하므로 한번 더 Exception 으로 감싸줌.
+
+### FileInputStream 바이트 단위 입출력 배열로 읽기
+
+```java
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class FileInputStreamTest2 {
+
+	public static void main(String[] args) {
+		
+		int i;
+		try(FileInputStream fis = new FileInputStream("input2.txt")) {
+			
+			byte[] bs = new byte[10];
+			
+			while((i = fis.read(bs)) != -1) {
+				
+				for(int ch : bs) {
+					System.out.print((char)ch);
+				}
+				System.out.println(" : " + i + "바이트 읽었음");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+```
+
+### 결과
+
+```
+ABCDEFGHIJ : 10바이트 읽었음
+KLMNOPQRST : 10바이트 읽었음
+UVWXYZQRST : 6바이트 읽었음
+```
+* input2.txt 에 써져있는 A~Z문자를 읽어보자.
+  * byte배열에 길이가 10개인 배열을 생성
+  * int i는 바이트 수를 반환하므로 -1일때는 EOF 이므로 -1이 아닐 때까지 반복함.
+  * bs에 담긴 배열의 길이 만큼 int ch를 읽는데 읽을 때는 문자로 나올 수 있도록 (char)ch 를 통해 읽어주자.
+
+* 여기서 결과를 자세히보면 맨마지막 UVWXYZQRST 에서 Z에 + QRST가 붙어있다 왜 붙어있을까??
+  * 버퍼에 데이터가 남아있기 때문임 버퍼를 클리어(flush)하거나 배열의 길이만큼만 읽으면 해결 가능함.
+
+### FileOutputStream 바이트 단위 입출력 스트림 예제
+
+* FileOutputStream은 FileInputStream 과 같이 사용되기에 함께 알아야함.
+* FileOutputStream은 사용방법을 예제를 통해 알아보자.
+
+```java
+ import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class FileOutputStreamTest2 {
+	
+	public static void main(String[] args) {
+		
+		try(FileOutputStream fos = new FileOutputStream("output.txt")){
+
+			fos.write(65);
+			fos.write(66);
+			fos.write(67);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		System.out.println("end");
+	}
+}
+```
+
+* FileInputStream을 통해 흐름을 파악하고 나니 OutputStrema도 유사하다는 것을 알 수 있었음.
+* try문이 실행되면 byte단위로 65, 66, 67 을 읽어서 output.txt 를 생성함. 결과는 ABC 로 잘나옴.
+
+### FileOutputStream 바이트 단위 입출력 배열로 읽기
+
+```java
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class FileOutputStreamTest2 {
+	
+	public static void main(String[] args) throws IOException {
+		
+		FileOutputStream fos = new FileOutputStream("outputArray.txt");
+		try(fos){
+			
+			byte[] bs = new byte[26];
+			byte data = 65;
+			for(int i=0; i<bs.length; i++) {
+				bs[i] = data;
+				data++;
+			}
+			
+			fos.write(bs);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		System.out.println("end");
+	}
+}
+```
+
+* OutputSream 배열 역시 유사한 방식.
+* 알파벳 사이즈 26만큼 배열 생성
+* 초기값에 65(A) 를 넣어줌.
+* 26의 길이만큼 1씩 증가할 때마다 65에서 1씩 증가하므로
+* outputArray.txt에는 A~Z 알파벳이 정상적으로 입력됨.
+
+### 문자 단위 입출력 스트림
+
+![Alt text](image-10.png)
+
+* 바이트 단위 입출력 스트림에 대해서 알아보았으니 이번엔 문자 단위는 어떻게 하는지 알아보자.
+
+### 문자 단위 입출력 스트림 예제 
+
+```java
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileWriterTest {
+
+	public static void main(String[] args) {
+
+		try(FileWriter fw = new FileWriter("writer.txt")){
+			fw.write('A');    // 문자 하나 출력
+			char buf[] = {'B','C','D','E','F','G'};
+			
+			fw.write(buf); //문자 배열 출력
+			fw.write("안녕하세요. 잘 써지네요"); //String 출력
+			fw.write(buf, 1, 2); //문자 배열의 일부 출력
+			fw.write("65");  //숫자를 그대로 출력
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("출력이 완료되었습니다.");
+	}
+}
+```
+
+```java
+import java.io.FileReader;
+import java.io.IOException;
+
+public class FileReaderTest {
+	
+	public static void main(String[] args) {
+		
+		try {
+			FileReader fr = new FileReader("reader.txt");
+
+			int i;
+			
+			while((i = fr.read()) != -1) {
+				System.out.print((char)i);	
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+```
+
+* 타이핑을 안보고 직접 치다보니 FileReader, FileWriter 같은 경우는 이제 쉽게 작성할 수가 있음.
+* Byte를 쓸 때는 FileInputStream, FileOutputStream 
+* 문자 단위를 입출력 할 때는 FileReader, FileWriter 를 사용하자.
+
+</div>
+</details>
