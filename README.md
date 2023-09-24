@@ -2168,3 +2168,176 @@ transient String job;
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">Thread</summary>
+<div markdown="1">
+
+#### 개요
+
+* 프로세스를 구성하는 단위??, 프로세스의 자원을 공유해서 메모리 낭비를 막아준다? 
+* 프로세스를 복제할 때 fork 하면 여러 개의 동일한 프로세스가 복제되어 메모리가 낭비됨.  
+* 하지만 쓰레드는 프로세스의 자원(힙, 메모리, 스택 영역 메모리)을 공유하기 때문에 메모리 낭비를 막아줌.
+* 쓰레드 개념을 위의 정도로 알고있으나 실무에서 사용한 적이 없어서 감이 잘안오기에 다시 한 번 재정리해보자.
+
+#### Thread 예제
+
+```java
+ class MyThread extends Thread{
+	
+	public void run() {
+		
+		int i;
+		for(i=1; i<=200; i++) {
+			System.out.print(i + "\t");
+		}
+	}
+}
+
+public class ThreadTest {
+
+	public static void main(String[] args) {
+		
+		System.out.println( Thread.currentThread() + "start");
+		MyThread th1 = new MyThread();
+		MyThread th2 = new MyThread();
+		
+		th1.start();
+		th2.start();
+		System.out.println( Thread.currentThread() + "end");
+
+		// 익명 객체로도 실행 가능함.
+		Runnable run = new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("익명으로 실행");
+			}
+		};
+		run.run();
+	}
+}
+```
+
+* 쓰레드는 Thread를 상속해서 사용하는 방법, Runnable을 구현해서 사용하는 방법 두 가지가 있음.
+* Thread 를 run 하면 1부터 200까지의 로직을 수행됨.
+* Thread를 호출 하려면 객체를 생성하고 객체.start() 를 호출해서 사용가능함.
+* 간단하게 돌릴 경우에는 아래 예제처럼 익명 객체를 생성해서 바로 호출도 가능함.
+
+### Thread Status
+
+![Alt text](image-14.png)
+
+* Thread가 시작이면 Thread 풀에 들어옴.(CPU를 배분 받으려고 기다리는 상태 -> Runnable)
+* 언제든지 CPU를 배분받으면 실행될 수 있음. 실행되고 끝나면 Thread가 종료되며 Dead.
+* Not Runnable 상태는 CPU를 점유할 수 없는 상태임.
+  * Not Runnable 상태로 가려면 sleep, wait, join 세 가지가 있음.
+  * 리소스가 유효하면 notify 를 진행하면, 다시 Runnable 상태로 돌아갈 수 있음.
+* join은 두 개의 쓰레드가 돌면서 1개의 쓰레드가 수행되려고하면 다른 한 개의 결과가 필요한 경우임.
+  * join을 걸면 자기 자신이 Not Runnable 상태가 됨.
+  * 다른 한 개의 쓰레드가 끝나면 Runnable 상태로 돌아갈 수 있음.
+
+### synchronized 
+
+* multe-thread로 동기화를 제어하는 경우 사용.
+* 하나의 프로세스가 간섭하지 못하게 해당 프로세스만 진행하고 수행하도록 하는 것.
+* 즉, multi-thread로 동시접근되는 것을 막는다는의미.
+
+```java
+public class MyHero {
+	private String mHero;
+	
+	public static void main(String[] agrs) {
+		MyHero tmain = new MyHero();
+		System.out.println("Test start!");
+		new Thread(() -> {
+			for (int i = 0; i<1000000; i++) {tmain.batman();}			
+		}).start();
+		
+		new Thread(() -> {
+			for (int i = 0; i<1000000; i++) {tmain.superman();}
+		}).start();
+		System.out.println("Test end!");
+		
+	}
+	
+	public synchronized void batman() {
+		mHero= "batman";
+		
+		try {
+			long sleep = (long) (Math.random()*100);
+			Thread.sleep(sleep);
+			if ("batman".equals(mHero) == false) {
+				System.out.println("synchronization broken");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void superman() {
+		mHero = "superman";
+		
+		try {
+			long sleep = (long) (Math.random()*100);
+			Thread.sleep(sleep);
+			if ("superman".equals(mHero) == false) {
+				System.out.println("synchronization broken");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+}
+```
+
+* synchronized 함수가 두 개인 MyHero 클래스 객체 생성을 함.
+* 두 개의 Thread가 객체의 synchronized 함수인 batman() 과 superman() 각각 백만번 호출함.
+* batman(), superman() 함수는 mHero란 멤버변수에 각각 다른 값을 세팅하고, 랜덤하게 sleep한 후에 값이 변했는지 체크함.
+* 값이 변했다면 synchronization broken 을 찍음.
+* 즉, synchronized 함수는 자신이 포함된 객체에 lock을 건다. 라고 생각하며 이를 해결하기 위해서는 동기화 block 을 사용하면됨.
+
+```java
+public class SyncBlock1 {
+	public ArrayList<Integer> mList = new ArrayList<>();	
+	
+	public static void main(String[] agrs) throws InterruptedException {
+		SyncBlock1 syncblock1 = new SyncBlock1();
+		System.out.println("Test start!");
+		Thread t1 = new Thread(() -> {
+			for (int i = 0; i<10000; i++) {syncblock1.add(i);}			
+		});
+		
+		Thread t2 = new Thread(() -> {
+			for (int i = 0; i<10000; i++) {syncblock1.add(i);}
+		});
+		
+		t1.start();
+		t2.start();
+		
+		t1.join();		
+		t2.join();
+		
+		System.out.println(syncblock1.mList.size());
+		System.out.println("Test end!");
+		
+	}
+	
+	public void add(int val) {
+		/*
+		 * Code for synchronization is not needed
+		 * 
+		 */
+		synchronized(this) {
+			if (mList.contains(val) == false) {
+				mList.add(val);				
+			}			
+		}
+	}
+}
+```
+
+* 위의 예제와 같이 내부에 동기화가 필요한 부분에 대해서만 synchronized 블록을 활용.
+* Code for synchronization is not needed 주석으로 표시해놓은 곳에 동기화가 필요없는 다른 코드를 넣으면됨.
+</div>
+</details>
