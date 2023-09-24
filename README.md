@@ -2066,3 +2066,105 @@ public class FileReaderTest {
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">직렬화</summary>
+<div markdown="1">
+
+#### 직렬화 
+
+![Alt text](image-13.png)
+
+* 자바 시스템 내부 or 외부에서 사용되는 객체 또는 데이터를 바이트 형태로 변환하는 기술.
+* 직렬화는 왜 써야될까??
+	* 휘발성이 있는 캐싱 데이터를 영구 저장 필요할 때 사용할 수 있음.
+	* ex) 객체가 인스터스화 돼면 값이 변함. -> 그 상태 그대로의 데이터를 영구 저장이 필요할 떄.
+	* 즉, 시스템이 종료되더라도 나중에 다시 재사용할 필요성이 있을 때 사용함.
+
+### Serailization 예제
+
+```java
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+class Person implements Serializable{
+	
+	String name;
+	String job;
+	
+	public Person() {
+		
+	}
+	
+	public Person(String name, String job) {
+		this.name = name;
+		this.job = job;
+	}
+	
+	public String toString() {
+		return name + "," + job;
+	}
+}
+
+public class SerializationTest {
+
+	public static void main(String[] args) {
+		
+		Person personLee = new Person("Lee", "대표이사");
+		Person personSon = new Person("Son", "대표");
+		
+		try(FileOutputStream fos = new FileOutputStream("serial.txt");
+				ObjectOutputStream oos = new ObjectOutputStream(fos)){
+			
+			oos.writeObject(personLee);
+			oos.writeObject(personSon);
+			
+		}catch (Exception e) {
+			
+			System.out.println(e);
+		}
+		
+		// Input
+		try(FileInputStream fis = new FileInputStream("serial.txt");
+				ObjectInputStream ois = new ObjectInputStream(fis)){
+			
+			// class에 대한 정보가 없는 경우 classNotFoundException 발생
+			Person pLee = (Person)ois.readObject();
+			Person pSon = (Person)ois.readObject();
+			
+			System.out.println(pLee);
+			System.out.println(pSon);
+			
+		}catch (IOException e) {
+			
+			System.out.println(e);
+		}catch (ClassNotFoundException e2){
+			System.out.println(e2);
+		}
+	}
+}
+```
+
+* Class Person implements Serializable 구현 코드는 없으나 이 객체가 직렬화 가능하다는 마크업 인터페이스임.
+* FileOutputStream을 통해 serial.txt 를 씀. oos.writeObject -> Serializtion(직렬화)
+* 그 다음 FileInputStream을 통해 serial.txt 를 읽음. 역직렬화기능. 
+* serial.txt 를 열어보면 정보를 쓸 때 읽을 수 없는 코드로 보이나, 정보들을 다시 역직렬화를 통해 복원화함.
+
+```java
+String name;
+transient String job;
+```
+
+* 직렬화하다보면 직렬화가 안되는 (Socket)과 같은 것들을 가지고 있는 경우 
+* Class에서 직렬화할 수 없는 멤버를 갖고 있는데 Class를 직렬화하고자하면 해당 변수에 transient 를 붙여주면됨.
+  * 해당 멤버는 무시하고 직렬화를 진행함.
+  * 복원할 때 넣어주는 값은 default 값인 null을 반환해줌.
+
+> 직렬화라는 것은 인스턴스값을 그대로 저장하거나 전송하고 저장된 값을 복원하는 경우를 직렬화라고함.
+> 사용하지 못하는 변수는 transient 를 사용하자.
+
+</div>
+</details>
