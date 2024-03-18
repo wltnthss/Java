@@ -2341,3 +2341,100 @@ public class SyncBlock1 {
 * Code for synchronization is not needed 주석으로 표시해놓은 곳에 동기화가 필요없는 다른 코드를 넣으면됨.
 </div>
 </details>
+
+<details>
+<summary style="font-size:20px">Java var</summary>
+<div markdown="1">
+
+#### 개요 
+
+* Java10부터 도입된 var 에 대해 알아보기위함.
+
+#### Java var 사용방법
+
+* var는 변수를 선언할 떄 타입을 생략할 수 있으며, 컴파일러가 타입을 추론합니다.
+
+```java
+var String = "Hello, World!";
+```
+
+* 위와 같이 변수를 선언하면 컴파일러가 String 타입을 추론하며 지정해줍니다.
+* Js와 Kotlin 과 같은 언어 타입.
+* 컴파일 타임에 추론하는 것이기 때문에, Runtime에 추가 연산을 하지 않아서 성능에 영향을 주지는 않습니다.
+* var 의 기본 사용방법 및 제약사항에 대해서 알아보겠습니다.
+
+* Java 9 이하에서는 문자열을 선언할 때 다음과 같이 타입을 명시적으로 선언해야 했습니다.
+
+```java
+String str = "Hello world";
+```
+
+* Java 10에서는 다음과 같이 var로 타입 선언 없이 문자열을 선언할 수 있습니다.
+
+```java
+var str = "Hello world";
+
+if(str instanceof String){
+	System.out.println("This is a String : " + str);
+}
+
+var list = new ArrayList<String>();
+
+if (list instanceof ArrayList) {
+    System.out.println("This is a ArrayList");
+}
+
+int[] arr = {1, 2, 3};
+
+for (var n : arr) {
+    System.out.println("n : " + n);
+}
+```
+
+#### Java var 제약사항
+
+1. **지역 변수에서만 사용가능**합니다.
+
+* 아래와 같이 클래스의 멤버 변수를 선언할 때는 사용할 수 없습니다.
+
+```java
+class JavaLocalVariable {
+
+    public var str = "aaa";    // compile error
+
+    public var list = new ArrayList<String>();    //compile error
+}
+```
+
+2. **초기화 필요**
+
+```java
+var n; // compile error
+```
+
+* 초기화를 하지 않으면 어떤 타입인지 추론할 수 없기 때문에 컴파일 에러가 발생합니다.
+
+3. **null로 초기화할 수 없음**
+
+```java
+var map = null; // compile error
+```
+
+* 어떤 객체든 null이 할당될 수 있기 때문에, 타입 추론을 할 수 없으며 컴파일 에러가 발생합니다.
+
+4. **배열에 사용할 수 없음**
+
+```java 
+var arr = { 1, 2, 3 };    // compile error
+```
+
+* 배열을 사용할 때도 타입 추론을 못하기 때문에 명시적으로 타입을 정해줘야 합니다.
+
+5. **Lambda에 사용할 수 없음**
+
+```java
+var f = () -> { };    // compile error
+```
+
+</div> 
+</details>
