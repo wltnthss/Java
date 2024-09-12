@@ -466,6 +466,21 @@ public class EqualsTest {
 * hashCode 같은 경우도 studentNum 을 return 받았기 때문에 100 이라는 값이 나옴.
 * System 에서 static 메소드로 정의해놓은 identityHashCode 메소드는 실제 HashCode의 주소값을 알려주므로 다른 값이 나옴.
 
+### equals()
+
+**동일성과 동등성**
+
+* 동일성은 같은 메모리에 있는 참조값이 동일한지 확인하는 것.
+* 동등성은 논리적으로 같은지 확인하는 것.
+
+```java
+User a = new User("TMKR");	// 참조 x001
+User b = new User("TMKR");	// 참조 x002
+```
+
+* 회원 번호는 동일하지만 물리적으로 다른 메모리에 존제히는 객체이므로 동일성은 다르지만 동등성은 같다.
+
+
 </div>
 </details>
 
