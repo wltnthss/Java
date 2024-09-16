@@ -2453,3 +2453,101 @@ var f = () -> { };    // compile error
 
 </div> 
 </details>
+
+
+<details>
+<summary style="font-size:20px">불변 객체</summary>
+<div markdown="1">
+
+### 불변 객체
+
+* 객체의 상태(객체 내부의 값, 필드, 멤버 변수) 가 변하지 않는 객체를 불변 객체라고 합니다.
+* 객체의 값을 변경할 때 생기는 문제점을 해결하기 위해 불변 객체를 사용합니다.
+* 사용방법은 아래와 같습니다.
+
+```java
+public class ImmutableAddress {
+
+    private final String value;
+
+    public ImmutableAddress(String value) {
+        this.value = value;
+    }
+
+//    public void setValue(String value){
+//        this.value = value;
+//    }
+    
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableAddress{" +
+                "value='" + value + '\'' +
+                '}';
+    }
+}
+```
+
+* 위에 코드 예제에서 볼 수 있듯이 멤버 변수를 final로 지정함으로써 setValue를 사용하지 못하게하여 객체의 값을 변경하지 못하는 불변 객체로써 사용합니다.
+* 불변 객체의 값을 변경하고 싶다면 새로운 불변 객체를 생성해야하고 이렇게 함으로써 기존 변수들에 영향을 주지는 않습니다.
+
+#### 불변 객체 사용 예제
+
+```java
+public class ImmutableMyDate {
+    private final int year;
+    private final int month;
+    private final int day;
+
+    public ImmutableMyDate(int year, int month, int day) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+    }
+
+    public ImmutableMyDate withYear(int newYear) {
+        return new ImmutableMyDate(newYear, month, day);
+    }
+    public ImmutableMyDate withMonth(int newMonth) {
+        return new ImmutableMyDate(year, newMonth, day);
+    }
+    public ImmutableMyDate withDay(int newDay) {
+        return new ImmutableMyDate(year, month, newDay);
+    }
+
+    @Override
+    public String toString() {
+        return year + "-" + month + "-" + day;
+    }
+}
+
+public class ImmuableMyDateMain {
+    public static void main(String[] args) {
+
+        ImmutableMyDate date1 = new ImmutableMyDate(2024, 9, 16);
+        ImmutableMyDate date2 = date1;
+
+        System.out.println("date1 = " + date1);
+        System.out.println("date2 = " + date2);
+
+        System.out.println("2025 - > date1");
+        date1 = date1.withYear(2025);
+        System.out.println("date1 = " + date1);
+        System.out.println("date2 = " + date2);
+    }
+}
+```
+
+* 위의 코드와 같이 사용하면 원본 객체의 상태는 그대로 유지되고 변경사항은 새 복사본에 포함하여 불변 객체로써 사용가능합니다.
+* 불변의 값을 변경하고 싶을 때는 새로운 객체를 만들어서 반환하여 사용합니다.
+* 불변을 사용함으로써 date1, date2 를 독립적으로 사용하여 사이드 이펙트라는 큰 문제를 막을 수 있습니다.
+* 불변으로 설계하는 이유는 아래와 같은 세 가지의 장점도 존재합니다.
+	* 캐시 안전성
+	* 멀티 쓰레드 안전성
+	* 엔티티의 값 타입 
+
+</div> 
+</details>
