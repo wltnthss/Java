@@ -2551,3 +2551,34 @@ public class ImmuableMyDateMain {
 
 </div> 
 </details>
+
+<details>
+<summary style="font-size:20px">Wrapper Class</summary>
+<div markdown="1"> 
+
+* 오토박싱
+
+### 래퍼 클래스 기본형 차이
+
+* 기본형은 객체가 아니므로 아래와 같은 단점을 가지고 있습니다.
+	* 객체가 아니므로 메서드 사용 불가.
+	* null값을 가질 수 없음.
+* 래퍼 클래스는 불변이며 값 비교시 equals 를 통해 비교해야 합니다.
+
+```java
+int value = 7;
+// 기본형 -> 래퍼 클래스
+Integer boxedValue = Integer.valueOf(value);
+// 래퍼클래스 -> 기본향
+int unboxedValue = boxedValue.intValue();
+
+// 오토 박싱, 오토 언박싱
+Integer boxedValue2 = value;
+int unboxedValue2 = boxedValue2;
+```
+
+* 래퍼 클래스는 객체이므로 성능의 경우는 기본형이 더 좋습니다.
+* 유지보수와 최적화를 고려햐는 경우 유지보수하기 좋은 코드를 먼저 고민하는게 좋습니다.
+
+</div> 
+</details>
