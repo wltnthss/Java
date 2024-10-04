@@ -2556,8 +2556,6 @@ public class ImmuableMyDateMain {
 <summary style="font-size:20px">Wrapper Class</summary>
 <div markdown="1"> 
 
-* 오토박싱
-
 ### 래퍼 클래스 기본형 차이
 
 * 기본형은 객체가 아니므로 아래와 같은 단점을 가지고 있습니다.
@@ -2566,19 +2564,144 @@ public class ImmuableMyDateMain {
 * 래퍼 클래스는 불변이며 값 비교시 equals 를 통해 비교해야 합니다.
 
 ```java
-int value = 7;
-// 기본형 -> 래퍼 클래스
-Integer boxedValue = Integer.valueOf(value);
-// 래퍼클래스 -> 기본향
-int unboxedValue = boxedValue.intValue();
+public class wrapper{
+	public static void main(String[] args){
+		int value = 7;
+		// 기본형 -> 래퍼 클래스
+		Integer boxedValue = Integer.valueOf(value);
+		// 래퍼클래스 -> 기본향
+		int unboxedValue = boxedValue.intValue();
 
-// 오토 박싱, 오토 언박싱
-Integer boxedValue2 = value;
-int unboxedValue2 = boxedValue2;
+		// 오토 박싱, 오토 언박싱
+		Integer boxedValue2 = value;
+		int unboxedValue2 = boxedValue2;
+
+		System.out.println("boxedValue : " + boxedValue);
+		System.out.println("boxedValue : " + unboxedValue);
+		System.out.println("boxedValue : " + boxedValue2);
+		System.out.println("boxedValue : " + unboxedValue2);
+	}
+}
+
 ```
 
 * 래퍼 클래스는 객체이므로 성능의 경우는 기본형이 더 좋습니다.
 * 유지보수와 최적화를 고려햐는 경우 유지보수하기 좋은 코드를 먼저 고민하는게 좋습니다.
+
+</div> 
+</details>
+
+<details>
+<summary style="font-size:20px">열거형 Enum</summary>
+<div markdown="1"> 
+
+* 열거형 패턴을 사용하면 회원 등급으로 BASIC, GOLD, DIAMOND 를 나열하고 다른 문자열이 아닌 나열한 항목만 안전하게 사용 가능합니다.
+
+**타입 안전 열거형 패턴 사용전**
+
+```java
+public class StringGrade {
+    public static final String BASIC = "BASIC";
+    public static final String GOLD = "GOLD";
+    public static final String DIAMOND = "DIAMOND";
+}
+
+public class DiscountService {
+
+    // 회원의 등급과 가격
+    public int discount(String grade, int price){
+        int discountPercent = 0;
+
+        if(grade.equals(StringGrade.BASIC)){
+            discountPercent = 10;
+        } else if (grade.equals(StringGrade.GOLD)) {
+            discountPercent = 20;
+        } else if (grade.equals(StringGrade.DIAMOND)) {
+            discountPercent = 30;
+        } else{
+            System.out.println(grade + ": 할인 x");
+        }
+
+        return price * discountPercent / 100;
+    }
+}
+
+public class DiscountMain {
+    public static void main(String[] args) {
+        DiscountService discountService = new DiscountService();
+
+        int price = 10000;
+
+        int basic = discountService.discount(StringGrade.BASIC, price);
+        int gold = discountService.discount(StringGrade.GOLD, price);
+        int diamond = discountService.discount(StringGrade.DIAMOND, price);
+
+        System.out.println("basic = " + basic);
+        System.out.println("gold = " + gold);
+        System.out.println("diamond = " + diamond);
+    }
+}
+```
+
+**타입 안전 열거형 패턴 사용후**
+
+```java
+public class ClassGrade {
+    public static final ClassGrade BASIC = new ClassGrade();
+    public static final ClassGrade GOLD = new ClassGrade();
+    public static final ClassGrade DIAMOND = new ClassGrade();
+
+	// 외부에서 생성자로 생성하지 못하도록 private 생성자 생성
+    private ClassGrade(){
+
+    }
+}
+
+public class DiscountService {
+
+    // 회원의 등급과 가격
+    public int discount(ClassGrade classGrade, int price){
+        int discountPercent = 0;
+
+        if(classGrade == ClassGrade.BASIC){
+            discountPercent = 10;
+        }else if(classGrade == ClassGrade.GOLD){
+            discountPercent = 20;
+        }else if(classGrade == ClassGrade.DIAMOND){
+            discountPercent = 30;
+        }else{
+            System.out.println("할인X");
+        }
+
+        return price * discountPercent / 100;
+    }
+}
+
+public class ClassGradeEx02 {
+    public static void main(String[] args) {
+
+        int price = 10000;
+
+        DiscountService discountService = new DiscountService();
+        int basic = discountService.discount(ClassGrade.BASIC, price);
+        int gold = discountService.discount(ClassGrade.GOLD, price);
+        int diamond = discountService.discount(ClassGrade.DIAMOND, price);
+
+        System.out.println("basic = " + basic);
+        System.out.println("gold = " + gold);
+        System.out.println("diamond = " + diamond);
+    }
+}
+```
+
+* 위의 코드와 같이 **타입 안전 열거형 패턴 Type-Safe Enum Pattern**을 사용함으로써 두 가지 장점이 존재합니다.
+	* 타입 안전성 향상 : 정해진 객체만 사용하므로 잘못된 값 입력 방지
+	* 데이터 일관성 : 정해진 객체만 사용하므로 데이터 일관성 보장
+
+* 하지만 위 코드와 같이 작성하면 코드가 길어진다는 단점으로 자바는 편리하게 사용가능한 **Enum Type**을 제공합니다.
+
+### 열거형 Enum Type 
+
 
 </div> 
 </details>
