@@ -2702,6 +2702,57 @@ public class ClassGradeEx02 {
 
 ### 열거형 Enum Type 
 
+```java
+public enum Grade {
+    BASIC, GOLD, DIAMOND
+}
+```
+
+* 위에서 작성한 ClassGrade와 달리 enum을 사용하면 간단하게 작성 가능합니다.
+* 위 코드는 아래와 같은 코드 입니다.
+
+```java
+public class Grade extends Enum {
+    public static final Grade BASIC = new Grade();
+    public static final Grade GOLD = new Grade();
+    public static final Grade DIAMOND = new Grade();
+
+	// 외부에서 생성자로 생성하지 못하도록 private 생성자 생성
+    private Grade(){
+
+    }
+}
+```
+
+* 열겨형도 클래스이며 java.lang.Enum 을 상속 받습니다.
+
+**열거형 장점**
+* 타입 안정성 향상
+* 간결성 및 일관성
+* 확장성 
+
+### 열거형 주요 메서드
+
+```java
+public class EnumMethodMain {
+    public static void main(String[] args) {
+
+        // 모든 ENUM 반환
+        Grade[] values = Grade.values();
+        System.out.println(Arrays.toString(values));
+        for(Grade value : values){
+            System.out.println("value = " + value.name() + ", ordinal = " + value.ordinal());
+        }
+
+        // String -> ENUM 변환
+        String input = "GOLD";
+        Grade gold = Grade.valueOf(input);
+        System.out.println("gold = " + gold);
+    }
+}
+```
+
 
 </div> 
 </details>
+
