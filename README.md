@@ -2752,6 +2752,122 @@ public class EnumMethodMain {
 }
 ```
 
+### 열거형 Enum을 활용한 리팩토링 
+
+#### 기존코드
+
+```java
+public class ClassGrade {
+    public static final ClassGrade BASIC = new ClassGrade();
+    public static final ClassGrade GOLD = new ClassGrade();
+    public static final ClassGrade DIAMOND = new ClassGrade();
+
+    private ClassGrade(){
+
+    }
+}
+
+public class DiscountService {
+
+    // 회원의 등급과 가격
+    public int discount(ClassGrade classGrade, int price){
+        int discountPercent = 0;
+
+        if(classGrade == ClassGrade.BASIC){
+            discountPercent = 10;
+        }else if(classGrade == ClassGrade.GOLD){
+            discountPercent = 20;
+        }else if(classGrade == ClassGrade.DIAMOND){
+            discountPercent = 30;
+        }else{
+            System.out.println("할인X");
+        }
+
+        return price * discountPercent / 100;
+    }
+}
+```
+
+* 기존 discount 메서드는 위와 같이 등급에 따른 비율이 등급에 의존하고 있는 상태이지만 등급 클래스에서 생성자에 비율을 넣음으로써 아래와 같이 간단한 코드로 사용이 가능합니다.
+
+
+#### 리팩토링 후
+
+```java
+
+public class ClassGrade {
+    public static final ClassGrade BASIC = new ClassGrade(10);
+    public static final ClassGrade GOLD = new ClassGrade(20);
+    public static final ClassGrade DIAMOND = new ClassGrade(30);
+
+    private final int discountPercent;
+
+    private ClassGrade(int discountPercent){
+        this.discountPercent = discountPercent;
+    }
+
+    public int getDiscountPercent() {
+        return discountPercent;
+    }
+}
+
+public class DiscountService {
+
+    // 회원의 등급과 가격
+    public int discount(ClassGrade classGrade, int price){
+        return price * classGrade.getDiscountPercent() / 100;
+    }
+}
+```
+
+#### ENUM을 활용한 리팩토링 후 
+
+* 위에서 사용한 ClassGrade 를 Grade Enum Class로 변형시킵니다.
+
+* **리팩토링 내용**
+
+	1. 할인율 계산에서 Grade가 가지고 있는 할인율을 계산하므로 자신의 할인율을 캡슐화하여 사용할 수 있도록 캡슐화 합니다.(DiscountService Class 제거)
+	2. Main print 메서드를 추가하여 중복 코드를 제거합니다.
+	3. Grade 등급이 늘어나도 Main을 변경시키지 않도록 합니다.(배열로 변경)
+
+```java
+public enum Grade {
+    BASIC(10), GOLD(20), DIAMOND(30), VIP(40);
+
+    private final int discountPercent;
+
+    Grade(int discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
+    public int getDiscountPercent() {
+        return discountPercent;
+    }
+
+    // 추가
+    public int discount(int price) {
+        return price * discountPercent / 100;
+    }
+}
+
+public class EnumMain3 {
+    public static void main(String[] args) {
+
+        int price = 10000;
+        Grade[] values = Grade.values();
+
+        for (Grade value : values){
+            print(value, price);
+        }
+    }
+
+    public static void print(Grade grade, int price){
+        System.out.println(grade.name().toUpperCase() + " 등급 혜택 = " + grade.discount(price));
+    }
+}
+```
+
+
 
 </div> 
 </details>
