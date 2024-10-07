@@ -2594,7 +2594,6 @@ public class wrapper{
 <details>
 <summary style="font-size:20px">열거형 Enum</summary>
 <div markdown="1"> 
-
 * 열거형 패턴을 사용하면 회원 등급으로 BASIC, GOLD, DIAMOND 를 나열하고 다른 문자열이 아닌 나열한 항목만 안전하게 사용 가능합니다.
 
 **타입 안전 열거형 패턴 사용전**
@@ -2867,8 +2866,80 @@ public class EnumMain3 {
 }
 ```
 
+</div> 
+</details>
+
+<details>
+<summary style="font-size:20px">날짜와 시간</summary>
+<div markdown="1"> 
+
+### 날짜와 시간 
+
+* LocalDate, LocalTime 사용법
+
+```java
+public class LocalDateMain {
+
+    public static void main(String[] args) {
+        LocalDate nowDate = LocalDate.now();
+        LocalDate ofDate = LocalDate.of(2014, 10, 07);
+        System.out.println("nowDate = " + nowDate);
+        System.out.println("ofDate = " + ofDate);
+
+        // 계산 불변
+        LocalDate plusYears = ofDate.plusYears(1);
+        System.out.println("plusYears = " + plusYears);
+    }
+}
+
+public class LocalTimeMain {
+    public static void main(String[] args) {
+        LocalTime nowTime = LocalTime.now();
+        LocalTime ofTime = LocalTime.of(11, 21, 30);
+
+        System.out.println("nowTime = " + nowTime);
+        System.out.println("ofTime = " + ofTime);
+
+        LocalTime ofTimePlus = ofTime.plusSeconds(30);
+        System.out.println("지정 시간 + 30s = " + ofTimePlus);
+
+    }
+}
+```
+
+* 각각의 클래스도 제공하지만 년월일, 시분초를 함께 사용할 수 있는 LocalDateTime 클래스를 제공해줍니다.
+* LocalDateTime 사용법
+
+```java
+public class LocalDateTimeMain {
+    public static void main(String[] args) {
+        LocalDateTime nowDt = LocalDateTime.now();
+        LocalDateTime ofDt = LocalDateTime.of(2024, 10, 07, 11, 24, 30);
+        System.out.println("nowDt = " + nowDt);
+        System.out.println("ofDt = " + ofDt);
+
+        // 날짜와 시간 분리
+        LocalDate localDate = ofDt.toLocalDate();
+        LocalTime localTime = ofDt.toLocalTime();
+        System.out.println("localDate = " + localDate);
+        System.out.println("localTime = " + localTime);
+
+        // 날짜와 시간 합체
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        System.out.println("localDateTime = " + localDateTime);
+
+        // 계산(불변)
+        LocalDateTime ofDtPlus = ofDt.plusDays(1000);
+        System.out.println("지정 날짜 +1000Day = " + ofDtPlus);
+        LocalDateTime ofDtPlus1Year = nowDt.plusYears(1);
+        System.out.println("ofDtPlus1Year = " + ofDtPlus1Year);
+
+        // 비교
+        System.out.println("현재 날짜 시간 지정 날짜 시간보다 이후? = " + nowDt.isAfter(ofDt));
+    }
+}
+```
 
 
 </div> 
 </details>
-
