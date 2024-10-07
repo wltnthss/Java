@@ -2940,6 +2940,40 @@ public class LocalDateTimeMain {
 }
 ```
 
+#### 문자열 파싱과 포맷팅
+
+```java
+public class FormattingMain {
+    public static void main(String[] args) {
+        // 포맷팅 : 날짜 -> 문자 변환
+        LocalDate localDate = LocalDate.of(2024, 12, 31);
+        System.out.println("localDate = " + localDate);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        System.out.println("dateTimeFormatter = " + dateTimeFormatter);
+        String formattedDate = localDate.format(dateTimeFormatter);
+        System.out.println("formattedDate = " + formattedDate);
+
+        // 파싱 : 문자 -> 날짜 변환
+        String input = "2040년 01월 01일";
+        LocalDate parsedDate = LocalDate.parse(input, dateTimeFormatter);
+        System.out.println("parsedDate = " + parsedDate);
+
+        // 포맷팅 : 날짜와 시간 -> 문자 변환
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 10, 8, 12, 42, 59);
+        System.out.println("localDateTime = " + localDateTime);
+
+        DateTimeFormatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDate1 = localDateTime.format(dateTimeFormatter1);
+        System.out.println("formattedDate1 = " + formattedDate1);		
+    }
+}
+```
+
+* LocalDate와 같은 날짜 객체를 원하는 형태의 문자로 변경할 때에는 DateTimeFormatter의 ofPattern 을 사용하여 원하는 포맷을 지정하면 됩니다.
+
+* 공식 사이트 문서 URL
+https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#patterns
 
 </div> 
 </details>
