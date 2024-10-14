@@ -2984,7 +2984,7 @@ https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.htm
 
 ### 중첩 클래스, 내부 클래스란?
 
-* 클래스 안에 클래스를 중첩해서 사용하는 것을 중컵 클래스라고 합니다.
+* 클래스 안에 클래스를 중첩해서 사용하는 것을 중첩 클래스라고 합니다.
 * 중첩 클래스는 크게 non-static 과 **static(정적 중첩 클래스)** 두 가지
 	* non-static 에서는 크게 세 가지
 		* **내부 클래스**
@@ -3004,6 +3004,41 @@ https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.htm
 
 * 논리적 그룹화 : 다른 곳에서 사용될 필요가 없는 클래스가 외부에 노출되지 않는 장점이 존재합니다.
 * 캡슐화 : 중첩 클래스는 바깥 클래스의 private 멤버 접근 가능하므로 불필요한 public 메서드가 제거 가능합니다.
+
+### 정적 중첩 클래스
+
+```java
+public class NestedOuter {
+    private static int outClassValue = 3;
+    private int outInstanceValue = 2;
+
+    static class Nested{
+        private int nestedInstanceValue = 1;
+
+        public void print(){
+            // 자신의 멤버에는 접근 가능
+            System.out.println(nestedInstanceValue);
+
+            // 바깥 클래스 인스턴스 멤버에 접근은 불가능
+            // System.out.println(outInstanceValue);
+
+            // 바깥 클래스의 클래스 멤버에는 접근 가능
+            System.out.println(NestedOuter.outClassValue);
+
+        }
+
+    }
+}
+```
+
+* 정적 중첩 클래스는 앞에 static 이 붙습니다.
+* private 접근 제어자는 같은 클래스에 있을 때만 접근 가능하지만 중첩 클래스도 바깥 클래스와 같은 클래스이기에 접근 가능합니다.
+* 정접 중첩 클래스 특징 3가지
+	* 자신의 멤버에는 접근 가능합니다.
+	* 바깥 클래스의 인스턴스 멤버에는 접근이 불가능합니다.
+	* 바깥 클래스의 클래스 멤버에는 접근 가능합니다.
+* 바깥 클래스가 만든 인스턴스 필드에는 참조가 없기 때문에 불가능합니다.
+
 
 </div> 
 </details>
